@@ -1,19 +1,25 @@
 async function PokedexAPI(searchType, name, number, limit, offset){
-    let baseURL     = 'https://pokeapi.co/api/v2';
+    let fetchURL     = 'https://pokeapi.co/api/v2';
     switch(searchType) {
         case 'name':
         default:
-            baseURL += '/pokemon/'+name;  
+            fetchURL += `/pokemon/${name}`;
             break;
         case 'number':
-            baseURL += '/pokemon-species/'+number;
+            fetchURL += `/pokemon-species/${name}`;
             break;            
         case 'range':
-            baseURL += '/pokemon?limit='+limit+'&offset='+offset;
+            fetchURL += `/pokemon?limit=${limit}&offset=${offset}`;
+            break;
+        case 'generation':
+            fetchURL += `/generation/${number}`;
+            break;
+        case 'generationList':
+            fetchURL += `/generation/`;
             break;
     }
-    //console.log('url from PokedexAPI: ', baseURL);
-    let res     = await fetch(baseURL);
+    //console.log('url from PokedexAPI: ', fetchURL);
+    let res     = await fetch(fetchURL);
     let resData = await res.json();
     //console.log('resData from PokedexAPI: ', resData);
     return resData;
