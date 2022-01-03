@@ -422,6 +422,20 @@ img {
   }
 }
 
+.pokedex_results .pokedex_pokemon:hover {
+  opacity: 1;
+  -webkit-animation-name: hover-bounce;
+          animation-name: hover-bounce;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+  -webkit-animation-duration: .25s;
+          animation-duration: .25s;
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s;
+}
+
 .pokedex_results .pokedex_pokemon .detail-top {
   background: #F2F2F2;
   border-top-left-radius: 0.3em;
@@ -491,6 +505,228 @@ img {
   border: none;
   border-radius: 0.25em;
   margin: auto;
+  margin-bottom: 1em;
   text-align: center;
+}
+
+@-webkit-keyframes in-from-left {
+  0% {
+    -webkit-transform: translate(-100px, 0);
+            transform: translate(-100px, 0);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes in-from-left {
+  0% {
+    -webkit-transform: translate(-100px, 0);
+            transform: translate(-100px, 0);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes in-from-right {
+  0% {
+    -webkit-transform: translate(100px, 0);
+            transform: translate(100px, 0);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes in-from-right {
+  0% {
+    -webkit-transform: translate(100px, 0);
+            transform: translate(100px, 0);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes in-from-top {
+  0% {
+    -webkit-transform: translate(0, 100px);
+            transform: translate(0, 100px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes in-from-top {
+  0% {
+    -webkit-transform: translate(0, 100px);
+            transform: translate(0, 100px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes in-from-bottom {
+  0% {
+    -webkit-transform: translate(0, -100px);
+            transform: translate(0, -100px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes in-from-bottom {
+  0% {
+    -webkit-transform: translate(0, -100px);
+            transform: translate(0, -100px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes hover-bounce {
+  0% {
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  }
+  50% {
+    -webkit-transform: translate(0px, -5px);
+            transform: translate(0px, -5px);
+  }
+  100% {
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  }
+}
+
+@keyframes hover-bounce {
+  0% {
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  }
+  50% {
+    -webkit-transform: translate(0px, -5px);
+            transform: translate(0px, -5px);
+  }
+  100% {
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  }
+}
+
+.animate-in {
+  opacity: 0;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+  -webkit-animation-duration: .25s;
+          animation-duration: .25s;
+  -webkit-animation-delay: .25s;
+          animation-delay: .25s;
+}
+
+.animate-in.top {
+  -webkit-transform: translate(0, 100px);
+          transform: translate(0, 100px);
+  -webkit-animation-name: in-from-top;
+          animation-name: in-from-top;
+}
+
+.animate-in.right {
+  -webkit-transform: translate(100px, 0);
+          transform: translate(100px, 0);
+  -webkit-animation-name: in-from-right;
+          animation-name: in-from-right;
+}
+
+.animate-in.bottom {
+  -webkit-transform: translate(0, -100px);
+          transform: translate(0, -100px);
+  -webkit-animation-name: in-from-bottom;
+          animation-name: in-from-bottom;
+}
+
+.animate-in.left {
+  -webkit-transform: translate(-100px, 0);
+          transform: translate(-100px, 0);
+  -webkit-animation-name: in-from-left;
+          animation-name: in-from-left;
+}
+
+.loader {
+  background: url("img/pokeball_gray.png") center center no-repeat;
+  background-size: 32px 32px;
+  width: 32px;
+  height: 32px;
+  position: fixed;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+  -webkit-animation: loader .5s infinite;
+  animation: loader .5s infinite;
+}
+
+@-webkit-keyframes loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+footer {
+  background: #1f1f1f;
+  color: #999;
+  text-align: center;
+  padding: 1em;
+}
+
+footer a, footer b {
+  color: #fefefe;
 }
 /*# sourceMappingURL=style.css.map */

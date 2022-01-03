@@ -17,6 +17,12 @@ async function PokedexAPI(searchType, name, number, limit, offset){
         case 'generationList':
             fetchURL += `/generation/`;
             break;
+        case 'typeList':
+            fetchURL += `/type/`;
+            break;
+        case 'speciesData':
+            fetchURL += `/pokemon-species/?offset=${offset}&limit=${limit}`;
+            break;                       
     }
     //console.log('url from PokedexAPI: ', fetchURL);
     let res     = await fetch(fetchURL);

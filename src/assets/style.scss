@@ -443,7 +443,15 @@ img {
         @media (min-width:$breakpoint_lg) {
             flex:0 0 25%;
             max-width:25%;
-        }        
+        }    
+        &:hover {
+            opacity:1;
+            animation-name: hover-bounce;
+            animation-fill-mode: forwards;
+            animation-iteration-count: 1;
+            animation-duration: .25s;
+            animation-delay: 0s;
+        }    
         .detail-top {
             background:#F2F2F2;
             border-top-left-radius: 0.3em;
@@ -499,10 +507,89 @@ img {
             border:none;
             border-radius:0.25em;
             margin: auto;
+            margin-bottom:1em;
             text-align:center;
         }
     }    
 }
 
+@keyframes in-from-left {
+    0%   { transform: translate(-100px, 0); opacity:0; }
+    100% { transform: translate(0, 0);      opacity:1; }
+}
 
+@keyframes in-from-right {
+    0%   { transform: translate(100px, 0);  opacity:0; }
+    100% { transform: translate(0, 0);      opacity:1; }
+}
 
+@keyframes in-from-top {
+    0%   { transform: translate(0, 100px);  opacity:0; }
+    100% { transform: translate(0, 0);      opacity:1; }
+}
+
+@keyframes in-from-bottom {
+    0%   { transform: translate(0, -100px); opacity:0; }
+    100% { transform: translate(0, 0);      opacity:1; }
+}
+
+@keyframes hover-bounce {
+    0%   { transform: translate(0px, 0px);}
+    50%  { transform: translate(0px, -5px);}
+    100% { transform: translate(0px, 0px);}
+}
+
+.animate-in {
+    opacity:0;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+    animation-duration: .25s;
+    animation-delay:    .25s;
+    &.top {
+        transform: translate(0, 100px);
+        animation-name: in-from-top;
+    }    
+    &.right {
+        transform: translate(100px, 0);
+        animation-name: in-from-right;
+    }  
+    &.bottom {
+        transform: translate(0, -100px);
+        animation-name: in-from-bottom;
+    }    
+    &.left {
+        transform: translate(-100px, 0);
+        animation-name: in-from-left;
+    }        
+}
+
+.loader {
+    background: url("img/pokeball_gray.png") center center no-repeat;
+    background-size: 32px 32px;
+    width: 32px;
+    height: 32px;
+    position: fixed;
+    transform:translate(-50%,-50%);
+    left:50%;
+    top:50%;
+    -webkit-animation: loader .5s infinite;
+    -ms-animation: loader .5s infinite;
+    -moz-animation: loader .5s infinite;
+    -o-animation: loader .5s infinite;
+    animation: loader .5s infinite  
+}
+
+@keyframes loader {
+    0% {transform: rotate(0deg)}
+    100% { transform: rotate(360deg)}
+}
+
+footer {
+    background:#1f1f1f;
+    color:#999;
+    text-align:center;
+    padding:1em;
+    a, b {
+        color:#fefefe;
+    }
+}
