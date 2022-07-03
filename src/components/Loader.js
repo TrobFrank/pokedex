@@ -1,7 +1,7 @@
-function Loading() {
+function Loader() {
     return (
         <div className="loader"></div>
     )
 }
 
-export default Loading;
+export default Loader;
