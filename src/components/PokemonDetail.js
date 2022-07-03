@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { ENDPOINTS, MAXCOUNT } from '../assets/utils';
+import { displayTypes } from './Pokedex';
+import Loader from './Loader';
 
-function PokemonDetail(){
+function PokemonDetail(props){
     let params = useParams();
     const [pokemon, setPokemon] = useState([]);
     const [species, setSpecies] = useState([]);
@@ -10,16 +13,14 @@ function PokemonDetail(){
     const [evolution, setEvolution] = useState([]);
 
     useEffect(() => {
-        getAllPokemonData(params.name);
-    }, []);
+        getAllPokemonData();
+    }, [params.id]);
 
-    function getAllPokemonData(name) {
-        let baseURL = 'https://pokeapi.co/api/v2';    
+    function getAllPokemonData() {
         let basicEndpoints = [];
         let metaEndpoints = [];
-        basicEndpoints.push(`${baseURL}/pokemon/${name}`);
-        basicEndpoints.push(`${baseURL}/pokemon-species/${name}`);
-
+        basicEndpoints.push(`${ENDPOINTS.baseURL}${ENDPOINTS.pokemon}/${params.id}`);
+        basicEndpoints.push(`${ENDPOINTS.baseURL}${ENDPOINTS.species}/${params.id}`);
         Promise.all
             (basicEndpoints.map((endpoint) => axios.get(endpoint)))
             .then((multiResData) => {
@@ -47,50 +48,45 @@ function PokemonDetail(){
 
     }
 
-    if (pokemon.name !== undefined) {
+    if (pokemon.name !== undefined && type.name !== undefined && evolution.chain !== undefined) {
         return (
-            <div>
-                <h3>#{pokemon.id} - {pokemon.name}</h3>
-                <p>{species.flavor_text_entries ? species.flavor_text_entries[0].flavor_text : ''}</p>
-                <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />            
-                <Link to="/">Return to Pokedex</Link>
+            <div className="container">
+                <div className="container-inner">
+                    <div className="pokemon_detail display-flex flex-column">
+                        <div className="pokemon_header display-flex align-items-center">
+                            {pokemon.id - 1 > 0 ? <Link to={`../pokemon/${pokemon.id - 1}`}>Previous</Link> : ''}
+                            <h3> {pokemon.name} #{pokemon.id}</h3>
+                            {pokemon.id + 1 <= MAXCOUNT ? <Link to={`../pokemon/${pokemon.id + 1}`}>Next</Link> : ''}
+                        </div>
+                        <div className="display-flex flex-row flex-wrap">
+                            <div className="detail_left">
+                                <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />            
+                                {/* stats */}
+                            </div>
+                            <div className="detail_right">
+                                <p>{species.flavor_text_entries ? species.flavor_text_entries[0].flavor_text : ''}</p>    
+                                {/* size */}                        
+                                <div className="pokedex_pokemon-types display-flex flex-column justify-content-flex-start">
+                                    <div className="display-flex flex-column">
+                                        <h4>Type:</h4>
+                                        <div className="display-flex flex-row">{displayTypes(pokemon.types)}</div>
+                                    </div>
+                                    <div className="display-flex flex-column">
+                                        <h4>Weaknesses:</h4>
+                                        <div className="display-flex flex-row">{displayTypes(type.damage_relations.double_damage_from)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <Link to="/">Return to Pokedex</Link>
+                    </div>{/* pokemon_detail */}
+                </div>
             </div>
         )
     } else {
-        return(<h3>loading...</h3>)
+        return(<Loader/>)
     }
 
 }
-
-
-// function PokemonDetail(){
-//     let params = useParams();
-//     let [PokeData, setPokeData] = useState([]);
-
-//     useEffect(() => {
-//         PokeAPI('name', params.name).then(incomingData => setPokeData(incomingData));
-//     }, [setPokeData]);  
-
-//     if (PokeData.name !== undefined) {
-//         return (
-//             <div>
-//                 <div>#{PokeData.id} - {PokeData.name}</div>
-//                 <div>{PokeData.height}ft, {PokeData.weight} oz</div>
-//                 <img src={PokeData.sprites.front_default} alt={PokeData.name} />
-//                 <div>
-//                     <p><b>Types:</b></p>
-//                     {
-//                     PokeData.types.map(thisType => {
-//                         return <span key={thisType.type.name} >{thisType.type.name}</span>;
-//                     })                        
-//                     }                    
-//                 </div>
-//                 <Link to="/">Return to Pokedex</Link>
-//             </div>
-//         )
-//     } else {
-//         return (<h3>Loading...</h3>)
-//     }
-// }
 
 export default PokemonDetail;
