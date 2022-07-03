@@ -5,7 +5,7 @@ import axios from 'axios';
 import PokedexAPI from './PokedexAPI';
 import PokemonSummary from './PokemonSummary';
 import getAnimationClass from '../assets/getAnimationClass';
-import FILTERS from '../assets/filters';
+import { FILTERS, ENDPOINTS, MAXCOUNT } from '../assets/utils';
 
 function Pokedex(props){
     let params = useParams();
@@ -18,6 +18,7 @@ function Pokedex(props){
     let refOffset = useRef(0);
     let refRenderCount = useRef(0);
         refRenderCount.current = refRenderCount.current + 1;
+        console.log(`This many renders: ${refRenderCount.current}`);
 
     let [order, setOrder] = useState('low');
     let [generation, setGeneration] = useState(null);
@@ -63,7 +64,7 @@ function Pokedex(props){
     }
 
     const getGenerationData = () => {
-        return PokedexAPI('generation', false, params.generation).then((genData) => {
+        return PokedexAPI('generation', ENDPOINTS.generation, false, params.generation).then((genData) => {
             setGeneration(genData);
             return genData;
         });        
@@ -75,7 +76,7 @@ function Pokedex(props){
     }
 
     function loadSupriseMe(){
-        let surpriseMeRange = 898;
+        let surpriseMeRange = MAXCOUNT;
         if (props.speciesCount) {
             surpriseMeRange = props.speciesCount;
         }
@@ -84,7 +85,6 @@ function Pokedex(props){
     }
 
     const getRangeFromGeneration = (limit, offset, order) => {
-        const pokemonNameURL = 'https://pokeapi.co/api/v2/pokemon/';
         let arrPokemonEndpoints = []; //reset endpoint array each request
         //console.log('getRangeFromGeneration generation: ', generation);
         //console.log(`limit: ${limit} => offset: ${offset} => order: ${order}`);
@@ -94,14 +94,16 @@ function Pokedex(props){
             let genSliced = genSorted.slice(offset, (limit+offset)); //.slice is dumb
             //console.log('genSliced: ', genSliced);
             genSliced.forEach(pokemon => {
-                arrPokemonEndpoints.push(`${pokemonNameURL}${pokemon.name}`);
+                //console.log(pokemon);
+                arrPokemonEndpoints.push(`${ENDPOINTS.baseURL}${ENDPOINTS.pokemon}/${pokemon.id}`);//pokemon (sprites, etc)
             })
-
             //console.log('arrPokemonEndpoints: ', arrPokemonEndpoints);
             Promise.all
                 (arrPokemonEndpoints.map((endpoint) => axios.get(endpoint)))
                 .then((multiResData) => {
+                    //console.log('multiResData: ', multiResData);
                     multiResData.forEach(function(pokemonResData){
+                        //console.log('pokemonResData: ', pokemonResData);
                         refPokedexRange.current.push(pokemonResData.data);
                     })
                     setPokedexRange([...refPokedexRange.current]); //create/pass "new" obj to trigger state render
@@ -110,7 +112,6 @@ function Pokedex(props){
     }
 
     /* SORTING FUNCTIONS */
-
     const setArrayOrder = (array, order) => {
         let arrSorted = []
         //console.log('array passed: ', array);
@@ -129,7 +130,7 @@ function Pokedex(props){
         let arrMod = arrDirty.map((index) => {
             var pathList    = index.url.split('/');
             var idFromURL   = pathList[pathList.length - 1] < 1 ? pathList[pathList.length - 2] : pathList[pathList.length - 1] ; //trailing slash or not
-            return arrDirty = {...index, "sort": padStart(idFromURL, 3, '00')}
+            return arrDirty = {...index, "sort": padStart(idFromURL, 3, '00'), "id": idFromURL}
         });
         // let arrClean = orderBy(arrMod, index => index.sort, ['asc']); //sort by number asc first, then determine 
         // arrClean = setArrayOrder(arrClean, order);
@@ -142,31 +143,29 @@ function Pokedex(props){
             <div className="pokedex_results">
                 <div className="button-wrapper center">
                     <button className="button-lightblue" onClick={loadSupriseMe}>Surprise Me!</button>
-                    <select id="sort" defaultValue={order} onChange={(e) => {setOrder(e.target.value);}
-                        }>
+                </div>   
+                <div className="toggle-controls display-flex justify-content-center align-items-center">
+                    <select id="generation" defaultValue={params.generation} onChange={(e) => switchGeneration(e.target.value)} className="color-bg color-black">
+                        <option disabled="disabled">Select Generation</option>
+                        {displayGenerationList(props.generationList)}
+                    </select>                       
+                    <select id="sort" defaultValue={order} onChange={(e) => {setOrder(e.target.value);}} className="color-bg color-black">
                         <option disabled="disabled">Sort results by...</option>
                         <option value={FILTERS.SORT_BY.LOW}>Lowest Number (First)</option>
                         <option value={FILTERS.SORT_BY.HIGH}>Highest Number (First)</option>
                         <option value={FILTERS.SORT_BY.AZ}>A-Z</option>
                         <option value={FILTERS.SORT_BY.ZA}>Z-A</option>
                     </select>
-                    <select id="generation" defaultValue={params.generation} onChange={(e) => switchGeneration(e.target.value)}>
-                        <option disabled="disabled">Select Generation</option>
-                        {displayGenerationList(props.generationList)}
-                    </select>    
-                    <div>
-                        {`This many renders: ${refRenderCount.current}`}
-                    </div>                
-                </div>   
+                </div>
                 {
-                pokedexRange.map(function(pokemon, index){
-                    let animClass = '';
-                    //generate animation class for newly added
-                    if (index >= (pokedexRange.length - limit)) {
-                        animClass = getAnimationClass();
-                    }
-                    return <PokemonSummary pokemon={pokemon} key={index} animClass={animClass}/>
-                })
+                    pokedexRange.map(function(pokemon, index){
+                        let animClass = '';
+                        //generate animation class for newly added
+                        if (index >= (pokedexRange.length - limit)) {
+                            animClass = getAnimationClass();
+                        }
+                        return <PokemonSummary pokemon={pokemon} key={pokemon.id} animClass={animClass}/>
+                    })
                 }
                 <div className="button-wrapper center">
                     <button className="button-lightblue" data-offset={add(refOffset.current, limit)} onClick={loadMorePokemon}>load more Pokemon</button>
@@ -176,10 +175,12 @@ function Pokedex(props){
     )
 }
 
-function displayTypes(pokemonData) {
-    //takes pokemon response from /pokemon/:name and returns formatted types html with colors, etc
-    let typesHMTL = pokemonData.types.map(type => {
-        return <span className={`type-emblem type-emblem_sm background-color-${type.type.name}`}>{upperFirst(type.type.name)}</span>
+
+function displayTypes(pokemonTypes) {
+    let typesHMTL = pokemonTypes.map((type, i) => {
+        let dataRef = type;
+        if (type.hasOwnProperty('type')){dataRef = type.type;}
+        return <span className={`type-emblem type-emblem_sm background-color-${dataRef.name}`} key={i}>{upperFirst(dataRef.name)}</span>
     })
     return typesHMTL;
 }
