@@ -428,7 +428,6 @@ img {
 
 .container .container-inner {
   margin: auto;
-  background: white;
   max-width: 1024px;
 }
 
@@ -531,6 +530,11 @@ img {
   border-top-right-radius: 0.3em;
 }
 
+.pokedex_results .pokedex_pokemon .detail-top a {
+  display: block;
+  text-align: center;
+}
+
 .pokedex_results .pokedex_pokemon .detail-bottom {
   padding: 0 1em 1em 1em;
   background: #FFF;
@@ -591,11 +595,81 @@ img {
   text-align: center;
 }
 
+.pokemon_detail {
+  padding-top: 4em;
+}
+
 .pokemon_detail .pokemon_header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
   -webkit-box-flex: 0;
       -ms-flex: 0 0 100%;
           flex: 0 0 100%;
   max-width: 100%;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.pokemon_detail .pokemon_header .pokemon_next-prev-link {
+  padding: 3em;
+  background: #a4a4a4;
+  color: white;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+  text-align: center;
+  border-right: solid 2px white;
+  -webkit-transition: all .3s ease;
+  transition: all .3s ease;
+}
+
+.pokemon_detail .pokemon_header .pokemon_next-prev-link span {
+  position: relative;
+  top: -1.5em;
+}
+
+.pokemon_detail .pokemon_header .pokemon_next-prev-link + .pokemon_next-prev-link {
+  border-right: 0;
+  border-left: solid 2px white;
+}
+
+.pokemon_detail .pokemon_header .pokemon_next-prev-link:hover {
+  background-color: #30a7d7;
+}
+
+.pokemon_detail h3 {
+  text-align: center;
+  background: white;
+  height: auto;
+  margin-top: 0;
+  font-size: 2em;
+  margin: -1.5em 3em 0 3em;
+  padding: .75em 0;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+          flex: 0 0 100%;
+  -webkit-clip-path: polygon(15% 0, 85% 0, 100% 100%, 0% 100%);
+          clip-path: polygon(15% 0, 85% 0, 100% 100%, 0% 100%);
+}
+
+.pokemon_detail .pokemon_detail-body {
+  padding: 1em 0;
+  margin: -1em 5em;
+  background: white;
+  z-index: 10;
+}
+
+.pokemon_detail .detail_left,
+.pokemon_detail .detail_right {
+  padding: 1em;
 }
 
 @media (min-width: 30em) {
@@ -616,6 +690,23 @@ img {
             flex: 0 0 50%;
     max-width: 50%;
   }
+}
+
+.pokemon_detail .stats {
+  background: #a4a4a4;
+  padding: 1.5em;
+  border-radius: 0.5em;
+  margin-top: 1em;
+}
+
+.pokemon_detail .stats .label {
+  display: block;
+  float: left;
+  margin-bottom: 1.5em;
+}
+
+.pokemon_detail .pokemon_profle {
+  background-color: #F2F2F2;
 }
 
 @-webkit-keyframes in-from-left {
