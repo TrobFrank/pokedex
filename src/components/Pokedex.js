@@ -4,8 +4,9 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import PokedexAPI from './PokedexAPI';
 import PokemonSummary from './PokemonSummary';
+import BtnSupriseMe from './BtnSupriseMe';
 import getAnimationClass from '../assets/getAnimationClass';
-import { FILTERS, ENDPOINTS, MAXCOUNT } from '../assets/utils';
+import { FILTERS, ENDPOINTS } from '../assets/utils';
 
 function Pokedex(props){
     let params = useParams();
@@ -75,13 +76,6 @@ function Pokedex(props){
         getRangeFromGeneration(limit, refOffset.current, order);
     }
 
-    function loadSupriseMe(){
-        let surpriseMeRange = MAXCOUNT;
-        let randomWIthinMax = random(0, surpriseMeRange);
-        let randomPokemonSpecies = props.speciesList[randomWIthinMax - 1];
-        navigate(`../pokemon/${randomWIthinMax}/${randomPokemonSpecies.name}`);
-    }
-
     const getRangeFromGeneration = (limit, offset, order) => {
         let arrPokemonEndpoints = [];
         //console.log('getRangeFromGeneration generation: ', generation);
@@ -138,10 +132,8 @@ function Pokedex(props){
 
     return (
         <div className="container">
+            {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
             <div className="pokedex_results">
-                <div className="button-wrapper center">
-                    <button className="button-lightblue" onClick={loadSupriseMe}>Surprise Me!</button>
-                </div>   
                 <div className="toggle-controls display-flex justify-content-center align-items-center">
                     <select id="generation" defaultValue={params.generation} onChange={(e) => switchGeneration(e.target.value)} className="color-bg color-black">
                         <option disabled="disabled">Select Generation</option>
@@ -166,7 +158,7 @@ function Pokedex(props){
                     })
                 }
                 <div className="button-wrapper center">
-                    <button className="button-lightblue" data-offset={add(refOffset.current, limit)} onClick={loadMorePokemon}>load more Pokemon</button>
+                    <button className="btn button-lightblue" data-offset={add(refOffset.current, limit)} onClick={loadMorePokemon}>load more Pokemon</button>
                 </div>                
             </div>
         </div>

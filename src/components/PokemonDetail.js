@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ENDPOINTS, MAXCOUNT } from '../assets/utils';
 import { displayTypes } from './Pokedex';
+import BtnSupriseMe from './BtnSupriseMe';
 import Stats  from './Stats';
 import Loader from './Loader';
 
@@ -82,6 +83,7 @@ function PokemonDetail(props){
         
         return (
             <div className="container">
+                {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
                 <div className="container-inner">
                     <div className="pokemon_detail display-flex flex-column">
                         <div className="pokemon_header display-flex align-items-center">
@@ -111,7 +113,11 @@ function PokemonDetail(props){
                                     </div>
                                 </div>
                             </div>
-                        <Link to={`../generation/${species.generation.name}`}>Return to Pokedex</Link>
+                            <div class="detail_bottom">
+                                <div className="button-wrapper center">
+                                    <Link className="btn button-lightblue" to={`../generation/${species.generation.name}`}>Return to Pokedex</Link>
+                                </div>                                
+                            </div>{/* detail_bottom */}
                         </div>
                     </div>{/* pokemon_detail */}
                 </div>

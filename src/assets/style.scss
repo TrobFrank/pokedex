@@ -422,6 +422,7 @@ img {
     background-color:white;
     background-image:url('img/container_bg.png');
     clear:both;
+    padding-top:2em;
     .container-inner {
         margin:auto;
         max-width:1024px;
@@ -434,7 +435,7 @@ img {
     flex-direction:row;
     width:100%;
     max-width:$breakpoint_lg;
-    padding:0.5em;
+    padding:1em 0.5em;
     margin:auto;
     background-color:#FFF;
     background-repeat:repeat;
@@ -505,34 +506,34 @@ img {
         }
     }
 
-
-    .button-wrapper {
-        display:block;
-        width:100%;
-        text-align:center;
-        &.center {
-            margin:auto;
-            text-align:center;
-
-        }
-        button {
-            font-family: 'Ubuntu';
-            cursor: pointer;
-            font-size:1em;
-            padding:0.5em 1em;
-            border:none;
-            border-radius:0.25em;
-            margin: auto;
-            margin-bottom:1em;
-            text-align:center;
-        }
-    }  
-    
     select {
         padding:.5em 1.25em;
         font-size:1em;
         margin:0 .5em;
         text-transform:capitalize;
+    }
+}
+
+
+.button-wrapper {
+    display:block;
+    width:100%;
+    text-align:center;
+    &.center {
+        margin:auto;
+        text-align:center;
+
+    }
+    .btn {
+        font-family: 'Ubuntu';
+        cursor: pointer;
+        font-size:1em;
+        padding:0.5em 1em;
+        border:none;
+        border-radius:0.25em;
+        margin: auto;
+        margin-bottom:1em;
+        text-align:center;
     }
 }
 
@@ -550,7 +551,7 @@ img {
 }
 
 .pokemon_detail {
-    padding-top:4em;
+    padding-top:1em;
     .pokemon_header {
         display:flex;
         flex-wrap:nowrap;
@@ -611,6 +612,13 @@ img {
             flex:0 0 50%;
             max-width:50%;
         }
+    }
+
+    .detail_bottom {
+        margin-top:1em;
+        padding:1em;
+        flex:0 0 100%;
+        max-width:100%;        
     }
 
     .stats {
@@ -707,7 +715,7 @@ footer {
     background:#1f1f1f;
     color:#999;
     text-align:center;
-    padding:1em;
+    padding:5em 0 3em;
     a, b {
         color:#fefefe;
     }
