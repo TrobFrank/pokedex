@@ -1,5 +1,7 @@
+import { ENDPOINTS } from '../assets/utils';
+
 async function PokedexAPI(searchBy, endpoint, name, number, limit, offset){
-    let fetchURL     = `https://pokeapi.co/api/v2/${endpoint}`;
+    let fetchURL     = `${ENDPOINTS.baseURL}${endpoint}`;
     switch(searchBy) {
         case 'name':
         default:

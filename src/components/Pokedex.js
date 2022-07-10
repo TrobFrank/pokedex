@@ -77,15 +77,13 @@ function Pokedex(props){
 
     function loadSupriseMe(){
         let surpriseMeRange = MAXCOUNT;
-        if (props.speciesCount) {
-            surpriseMeRange = props.speciesCount;
-        }
-        let randomPokemonName = props.speciesList[random(0, surpriseMeRange)].name;
-        navigate(`../pokemon/${randomPokemonName}`);
+        let randomWIthinMax = random(0, surpriseMeRange);
+        let randomPokemonSpecies = props.speciesList[randomWIthinMax - 1];
+        navigate(`../pokemon/${randomWIthinMax}/${randomPokemonSpecies.name}`);
     }
 
     const getRangeFromGeneration = (limit, offset, order) => {
-        let arrPokemonEndpoints = []; //reset endpoint array each request
+        let arrPokemonEndpoints = [];
         //console.log('getRangeFromGeneration generation: ', generation);
         //console.log(`limit: ${limit} => offset: ${offset} => order: ${order}`);
         if (generation !== null) {
