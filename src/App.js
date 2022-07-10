@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useParams } from "react-router-dom";
+import { Routes, Route, useParams, Navigate } from "react-router-dom";
 import Pokedex from './components/Pokedex';
 import PokedexAPI from './components/PokedexAPI';
 import PokemonDetail from './components/PokemonDetail';
@@ -21,7 +21,7 @@ function App() {
 
   const getSetGenerationList = () => {
       return PokedexAPI('generationList', ENDPOINTS.generation).then((generationList) => {
-        setGenerationList(generationList.results);
+        setGenerationList(generationList.results);       
     });    
   }
 
@@ -34,7 +34,6 @@ function App() {
   const getSetSpeciesData = () => {
     return PokedexAPI('speciesData', ENDPOINTS.species, null, null, 9999, 0).then((speciesData) => {
       setSpeciesData(speciesData);
-      console.log(speciesData);
     });    
   }   
 
@@ -45,14 +44,6 @@ function App() {
         {(
           generationList && typeList && speciesData ? 
           <Routes>
-            <Route path="/" element={
-                <Pokedex 
-                generationList  = {generationList}
-                typeList        = {typeList}
-                speciesList     = {speciesData.results}
-                speciesCount    = {speciesData.count}
-                /> 
-            } />
             <Route path="generation/:generation" element={
               <Pokedex 
               generationList  = {generationList}
@@ -61,8 +52,19 @@ function App() {
               speciesCount    = {speciesData.count}
               />
             } />
-            <Route path="pokemon/:id" element={<PokemonDetail />} />
-            <Route path="pokemon/:id/:name" element={<PokemonDetail />} />
+            <Route path="pokemon/:id" element={
+              <PokemonDetail 
+              speciesList     = {speciesData.results}
+              typeList        = {typeList}
+              />
+            } />
+            <Route path="pokemon/:id/:name" element={
+              <PokemonDetail 
+              speciesList     = {speciesData.results}
+              typeList        = {typeList}
+              />
+              } />
+            <Route path="*" element={<Navigate to={`generation/${generationList[0].name}`} />} />
           </Routes> 
           : 
           <Loader/>

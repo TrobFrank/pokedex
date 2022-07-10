@@ -1,20 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ENDPOINTS, MAXCOUNT } from '../assets/utils';
 import { displayTypes } from './Pokedex';
+import Stats  from './Stats';
 import Loader from './Loader';
 
 function PokemonDetail(props){
     let params = useParams();
+    let navigate = useNavigate();
     const [pokemon, setPokemon] = useState([]);
     const [species, setSpecies] = useState([]);
     const [type, setType] = useState([]);
     const [evolution, setEvolution] = useState([]);
+    const [nextPokemon, setNextPokemon] = useState({});
+    const [prevPokemon, setPrevPokemon] = useState({});
+    
 
     useEffect(() => {
+        if (params.id && !params.name){
+            let pokemonName = props.speciesList[params.id - 1].name;
+            if (pokemonName !== undefined){
+                navigate(`../pokemon/${params.id}/${pokemonName}`); 
+            }
+        }
         getAllPokemonData();
     }, [params.id]);
+
+    useEffect(()=> {
+
+        if (pokemon.id - 1 > 0){
+            let prevPokemonData = props.speciesList[pokemon.id - 2];
+            if (prevPokemonData !== undefined){
+                prevPokemonData.id = pokemon.id - 1;
+                setPrevPokemon(prevPokemonData);
+            }
+        }
+        if (pokemon.id + 1 <= MAXCOUNT){
+            let nextPokemonData = props.speciesList[pokemon.id];
+            if (nextPokemonData !== undefined){
+                nextPokemonData.id = pokemon.id + 1;
+                setNextPokemon(nextPokemonData);
+            }                    
+        }
+
+    }, [pokemon])
+
 
     function getAllPokemonData() {
         let basicEndpoints = [];
@@ -45,23 +76,26 @@ function PokemonDetail(props){
                 }).catch(error => console.log(error));   
 
         }).catch(error => console.log(error));
-
     }
 
     if (pokemon.name !== undefined && type.name !== undefined && evolution.chain !== undefined) {
+        
         return (
             <div className="container">
                 <div className="container-inner">
                     <div className="pokemon_detail display-flex flex-column">
                         <div className="pokemon_header display-flex align-items-center">
-                            {pokemon.id - 1 > 0 ? <Link to={`../pokemon/${pokemon.id - 1}`}>Previous</Link> : ''}
-                            <h3> {pokemon.name} #{pokemon.id}</h3>
-                            {pokemon.id + 1 <= MAXCOUNT ? <Link to={`../pokemon/${pokemon.id + 1}`}>Next</Link> : ''}
+                            {Object.keys(prevPokemon).length > 0 ? <Link className="pokemon_next-prev-link" to={`../pokemon/${prevPokemon.id}/${prevPokemon.name}`}><span>#{prevPokemon.id} {prevPokemon.name}</span></Link> : ''}
+                            {Object.keys(nextPokemon).length > 0 ? <Link className="pokemon_next-prev-link" to={`../pokemon/${nextPokemon.id}/${nextPokemon.name}`}><span>{nextPokemon.name} #{nextPokemon.id}</span></Link> : ''}
                         </div>
-                        <div className="display-flex flex-row flex-wrap">
+                        <h3> {pokemon.name} #{pokemon.id}</h3>
+                        <div className="pokemon_detail-body display-flex flex-row flex-wrap">
                             <div className="detail_left">
-                                <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />            
+                                <div className="pokemon_profle">
+                                    <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />            
+                                </div>
                                 {/* stats */}
+                                {pokemon.stats.length > 0 ? <Stats pokemonStats={pokemon.stats} /> :''}
                             </div>
                             <div className="detail_right">
                                 <p>{species.flavor_text_entries ? species.flavor_text_entries[0].flavor_text : ''}</p>    
@@ -77,8 +111,8 @@ function PokemonDetail(props){
                                     </div>
                                 </div>
                             </div>
+                        <Link to={`../generation/${species.generation.name}`}>Return to Pokedex</Link>
                         </div>
-                        <Link to="/">Return to Pokedex</Link>
                     </div>{/* pokemon_detail */}
                 </div>
             </div>
