@@ -1,148 +1,187 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { upperFirst, padStart, random, add, union, orderBy } from 'lodash';
+import React, { useEffect, useState, useRef } from 'react';
+import { orderBy, padStart, random, add, upperFirst } from 'lodash';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import PokedexAPI from './PokedexAPI';
-import { isCompositeComponent } from 'react-dom/test-utils';
+import PokemonSummary from './PokemonSummary';
+import getAnimationClass from '../assets/getAnimationClass';
+import { FILTERS, ENDPOINTS, MAXCOUNT } from '../assets/utils';
 
-function Pokedex(){
+function Pokedex(props){
+    let params = useParams();
+    let navigate = useNavigate();
+    let location = useLocation();
 
-    let arrCurrentPokemon = [];
-    let pokemonDisplay = <div></div>;
-
-    let [PokedexRange, setPokedexRange] = useState([]);
-    let [offset, setOffset] = useState(0);
-    let [order, setOrder] = useState('first_low');
     let limit = 2;
-    let orderMax = 898; //get from pokemon-species endpoint
-    let arrPokemonData = [];
+
+    let refPokedexRange = useRef([]);
+    let refOffset = useRef(0);
+    let refRenderCount = useRef(0);
+        refRenderCount.current = refRenderCount.current + 1;
+        console.log(`This many renders: ${refRenderCount.current}`);
+
+    let [order, setOrder] = useState('low');
+    let [generation, setGeneration] = useState(null);
+    let [pokedexRange, setPokedexRange] = useState([]);
+
+    //switching generations
+    useEffect(() => {
+        refOffset.current = 0;
+        refPokedexRange.current = [];
+        getGenerationData();
+        //console.log('location.pathname changed');
+    }, [location.pathname]);
 
     useEffect(() => {
-        getOrderedPokemonRange(limit, offset, order);
-        displayFromState();
-    }, [offset]);      
+        refPokedexRange.current = [];
+        getRangeFromGeneration(limit, refOffset.current, order);
+        //console.log('generation changed');
+    }, [generation]);   
 
+    //reorder
     useEffect(() => {
-        let newOrder = sortCurrentPokemonRange(PokedexRange, order);
-        setPokedexRange(newOrder);
-        displayFromState();
-        console.log(order);
+        refOffset.current = 0;
+        refPokedexRange.current = [];
+        getRangeFromGeneration(limit, refOffset.current, order);
+        //console.log('order changed', order );
     }, [order]); 
 
-    // const getRandomPokemonRange = (limit, offset, order) => {
-    //     console.log('nyi');
-    // }
+    useEffect(() => {
+        //console.log('pokedexRange changed', pokedexRange );       
+    }, [pokedexRange]);
 
-    //idea: sort by generation first. search limited to name/id
-    
+    /* GENERATION FUNCTIONS */
+    const switchGeneration = (genName) => {
+        navigate(`../generation/${genName}`); 
+    } 
 
-    //sorting issue:
-    /* 
-        lowest number works by default
-        highest number sorts currently loaded..
-            1. make all new request to sort from pokemon?limit={x}&offset={(orderMax - limit)}
-            2. then sorting into "order" (desc by ID)
-            3. update "load more pokemon" button to work backwards, beginning from max
-        a-z... not sure if possible, without going by an entire generation
-        z-a... not sure if possible, without going by an entire generation
-    */
-
-    const getOrderedPokemonRange = (limit, offset, order) => {
-        PokedexAPI('range', false, false, limit, offset).then((incomingPokemon => {
-            let arrPokemonEndpoints = []; //reset endpoint array each request
-            incomingPokemon.results.forEach(pokemon => {
-                arrPokemonEndpoints.push(pokemon.url);
+    const displayGenerationList = (genList) => {
+        return (
+            genList.map(function(gen){
+                return (<option key={gen.name} value={gen.name} selected={params.generation == gen.name ? 'selected': null } >{gen.name}</option>)
             })
+        )
+    }
+
+    const getGenerationData = () => {
+        return PokedexAPI('generation', ENDPOINTS.generation, false, params.generation).then((genData) => {
+            setGeneration(genData);
+            return genData;
+        });        
+    }
+
+    function loadMorePokemon() {
+        refOffset.current = add(refOffset.current, limit);
+        getRangeFromGeneration(limit, refOffset.current, order);
+    }
+
+    function loadSupriseMe(){
+        let surpriseMeRange = MAXCOUNT;
+        let randomWIthinMax = random(0, surpriseMeRange);
+        let randomPokemonSpecies = props.speciesList[randomWIthinMax - 1];
+        navigate(`../pokemon/${randomWIthinMax}/${randomPokemonSpecies.name}`);
+    }
+
+    const getRangeFromGeneration = (limit, offset, order) => {
+        let arrPokemonEndpoints = [];
+        //console.log('getRangeFromGeneration generation: ', generation);
+        //console.log(`limit: ${limit} => offset: ${offset} => order: ${order}`);
+        if (generation !== null) {
+            let genSorted = sortSpeciesListByURL(generation.pokemon_species, order);
+            //console.log('genSorted: ', genSorted);
+            let genSliced = genSorted.slice(offset, (limit+offset)); //.slice is dumb
+            //console.log('genSliced: ', genSliced);
+            genSliced.forEach(pokemon => {
+                //console.log(pokemon);
+                arrPokemonEndpoints.push(`${ENDPOINTS.baseURL}${ENDPOINTS.pokemon}/${pokemon.id}`);//pokemon (sprites, etc)
+            })
+            //console.log('arrPokemonEndpoints: ', arrPokemonEndpoints);
             Promise.all
                 (arrPokemonEndpoints.map((endpoint) => axios.get(endpoint)))
                 .then((multiResData) => {
+                    //console.log('multiResData: ', multiResData);
                     multiResData.forEach(function(pokemonResData){
-                        arrPokemonData.push(pokemonResData.data);
+                        //console.log('pokemonResData: ', pokemonResData);
+                        refPokedexRange.current.push(pokemonResData.data);
                     })
-                    console.log('UNSORTED arrPokemonData: ', arrPokemonData);
-                    arrPokemonData = setArrayOrder(union(PokedexRange, arrPokemonData), order); //dedupe and order
-                    console.log('ORDERED arrPokemonData: ', arrPokemonData);
-                    setPokedexRange(arrPokemonData);
-            }).catch(error => console.log(error));            
-        }));
-    }
-
-    const sortCurrentPokemonRange = (range, order) => {
-        return setArrayOrder(range, order);
-    }
-
-    const displayFromState = () => {
-        console.log('here displayFromState PokedexRange: ', PokedexRange)
-        if (PokedexRange !== []) {
-            arrCurrentPokemon = Array.from(PokedexRange);
-            pokemonDisplay = arrCurrentPokemon.map(function(pokemon){
-                //console.log('pokedex_pokemon data: ', pokemon);
-                return (
-                    <div className="pokedex_pokemon" key={pokemon.id}>
-                        <div className="detail-top">
-                            <Link to={`pokemon/${pokemon.name}`}>
-                                <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />            
-                            </Link>
-                        </div>
-                        <div className="detail-bottom">
-                            <p className="pokedex_pokemon-id">#{padStart(pokemon.id, 3, '00')}</p>
-                            <h3 className="pokedex_pokemon-title">{upperFirst(pokemon.name)}</h3>
-                            <div className="pokedex_pokemon-types">
-                                {displayTypes(pokemon)}
-                            </div>
-                        </div>
-                    </div>
-                )
-            });
-            return pokemonDisplay;
-        } else {
-            return (<div>Loading...</div>)
+                    setPokedexRange([...refPokedexRange.current]); //create/pass "new" obj to trigger state render
+                }).catch(error => console.log(error)); 
         }
     }
 
+    /* SORTING FUNCTIONS */
     const setArrayOrder = (array, order) => {
-            let arrSorted = []
-            //console.log('array passed: ', array);
-            switch(order) {
-                case 'low':
-                default:     arrSorted = orderBy(array, index => index.id, ['asc']); break;
-                case 'high': arrSorted = orderBy(array, index => index.id, ['desc']); break;
-                case 'az':   arrSorted = orderBy(array, index => index.name, ['asc']); break;
-                case 'za':   arrSorted = orderBy(array, index => index.name, ['desc']); break;                                        
-            } 
-            //console.log('arrSorted: ', arrSorted);
-            return arrSorted;
+        let arrSorted = []
+        //console.log('array passed: ', array);
+        switch(order) {
+            case 'low':
+            default:     arrSorted = orderBy(array, index => index.sort, ['asc']); break;
+            case 'high': arrSorted = orderBy(array, index => index.sort, ['desc']); break;
+            case 'az':   arrSorted = orderBy(array, index => index.name, ['asc']); break;
+            case 'za':   arrSorted = orderBy(array, index => index.name, ['desc']); break;                                        
+        } 
+        //console.log('arrSorted: ', arrSorted);
+        return arrSorted;
     }
+
+    function sortSpeciesListByURL(arrDirty, order){
+        let arrMod = arrDirty.map((index) => {
+            var pathList    = index.url.split('/');
+            var idFromURL   = pathList[pathList.length - 1] < 1 ? pathList[pathList.length - 2] : pathList[pathList.length - 1] ; //trailing slash or not
+            return arrDirty = {...index, "sort": padStart(idFromURL, 3, '00'), "id": idFromURL}
+        });
+        // let arrClean = orderBy(arrMod, index => index.sort, ['asc']); //sort by number asc first, then determine 
+        // arrClean = setArrayOrder(arrClean, order);
+        let arrClean = setArrayOrder(arrMod, order);        
+        return arrClean;    
+    }    
 
     return (
         <div className="container">
             <div className="pokedex_results">
                 <div className="button-wrapper center">
-                    {/* <button className="button-lightblue" onClick={() => getRandomPokemonRange()}>Surprise Me!</button> */}
-                    <select id="sort" onChange={(e) => setOrder(e.target.value)}>
-                        <option disabled="disabled">Sort results by...</option>
-                        <option value="low">Lowest Number (First)</option>
-                        <option value="high">Highest Number (First)</option>
-                        <option value="az">A-Z</option>
-                        <option value="za">Z-A</option>
-                    </select>
+                    <button className="button-lightblue" onClick={loadSupriseMe}>Surprise Me!</button>
                 </div>   
-                {displayFromState()}
+                <div className="toggle-controls display-flex justify-content-center align-items-center">
+                    <select id="generation" defaultValue={params.generation} onChange={(e) => switchGeneration(e.target.value)} className="color-bg color-black">
+                        <option disabled="disabled">Select Generation</option>
+                        {displayGenerationList(props.generationList)}
+                    </select>                       
+                    <select id="sort" defaultValue={order} onChange={(e) => {setOrder(e.target.value);}} className="color-bg color-black">
+                        <option disabled="disabled">Sort results by...</option>
+                        <option value={FILTERS.SORT_BY.LOW}>Lowest Number (First)</option>
+                        <option value={FILTERS.SORT_BY.HIGH}>Highest Number (First)</option>
+                        <option value={FILTERS.SORT_BY.AZ}>A-Z</option>
+                        <option value={FILTERS.SORT_BY.ZA}>Z-A</option>
+                    </select>
+                </div>
+                {
+                    pokedexRange.map(function(pokemon, index){
+                        let animClass = '';
+                        //generate animation class for newly added
+                        if (index >= (pokedexRange.length - limit)) {
+                            animClass = getAnimationClass();
+                        }
+                        return <PokemonSummary pokemon={pokemon} key={pokemon.id} animClass={animClass}/>
+                    })
+                }
                 <div className="button-wrapper center">
-                    <button className="button-lightblue" data-offset={add(offset,limit)} onClick={() => setOffset(add(offset,limit))}>load more Pokemon</button>
+                    <button className="button-lightblue" data-offset={add(refOffset.current, limit)} onClick={loadMorePokemon}>load more Pokemon</button>
                 </div>                
             </div>
         </div>
     )
 }
 
-function displayTypes(pokemonData) {
-    //takes pokemon response from /pokemon/:name and returns formatted types html with colors, etc
-    let typesHMTL = pokemonData.types.map(type => {
-        return <span key={type.name} className={`type-emblem type-emblem_sm background-color-${type.type.name}`}>{upperFirst(type.type.name)}</span>
+
+function displayTypes(pokemonTypes) {
+    let typesHMTL = pokemonTypes.map((type, i) => {
+        let dataRef = type;
+        if (type.hasOwnProperty('type')){dataRef = type.type;}
+        return <span className={`type-emblem type-emblem_sm background-color-${dataRef.name}`} key={i}>{upperFirst(dataRef.name)}</span>
     })
     return typesHMTL;
 }
 
-
 export default Pokedex;
+export { displayTypes };
