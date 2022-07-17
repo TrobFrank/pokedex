@@ -6,7 +6,7 @@ import { displayTypes } from './Pokedex';
 import BtnSupriseMe from './BtnSupriseMe';
 import Stats  from './Stats';
 import Loader from './Loader';
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
+import Image from './Image';
 
 function PokemonDetail(props){
     let params = useParams();
@@ -17,6 +17,7 @@ function PokemonDetail(props){
     const [evolution, setEvolution] = useState([]);
     const [nextPokemon, setNextPokemon] = useState({});
     const [prevPokemon, setPrevPokemon] = useState({});
+    const [loading, setLoading] = useState(true);
     
 
     useEffect(() => {
@@ -50,6 +51,7 @@ function PokemonDetail(props){
 
 
     function getAllPokemonData() {
+        setLoading(true);
         let basicEndpoints = [];
         let metaEndpoints = [];
         basicEndpoints.push(`${ENDPOINTS.baseURL}${ENDPOINTS.pokemon}/${params.id}`);
@@ -65,7 +67,6 @@ function PokemonDetail(props){
                 metaEndpoints.push(speciesRes.evolution_chain.url);
                 setPokemon(pokemonRes);
                 setSpecies(speciesRes);
-            
                 Promise.all
                     (metaEndpoints.map((endpoint) => axios.get(endpoint)))
                     .then((multiResData) => {
@@ -75,9 +76,11 @@ function PokemonDetail(props){
                         console.log('data: evoRes: ', evoRes);
                         setType(typeRes);
                         setEvolution(evoRes);
+                        setLoading(false);
                 }).catch(error => console.log(error));   
 
         }).catch(error => console.log(error));
+
     }
 
     function localeSpeciesGenera(arrGenera, locale){
@@ -99,7 +102,14 @@ function PokemonDetail(props){
         })
     }
 
-    if (pokemon.name !== undefined && type.name !== undefined && evolution.chain !== undefined) {
+    /* if (pokemon.name !== undefined && type.name !== undefined && evolution.chain !== undefined) {
+        setLoading(false);
+    }*/
+
+    if (loading){
+        return(<Loader/>)
+    } else {
+
         let flavorText = localeSpeciesFlavorText(species.flavor_text_entries, "en");
         return (
             <div className="container">
@@ -114,7 +124,7 @@ function PokemonDetail(props){
                         <div className="pokemon_detail-body display-flex flex-row flex-wrap">
                             <div className="detail_left">
                                 <div className="pokemon_profle">
-                                    <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />            
+                                    <Image altTxt={pokemon.name} source={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} /> 
                                 </div>
                                 {/* stats */}
                                 {pokemon.stats.length > 0 ? <Stats pokemonStats={pokemon.stats} /> :''}
@@ -178,8 +188,6 @@ function PokemonDetail(props){
                 </div>
             </div>
         )
-    } else {
-        return(<Loader/>)
     }
 
 }
