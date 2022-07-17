@@ -6,6 +6,7 @@ import { displayTypes } from './Pokedex';
 import BtnSupriseMe from './BtnSupriseMe';
 import Stats  from './Stats';
 import Loader from './Loader';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 
 function PokemonDetail(props){
     let params = useParams();
@@ -79,8 +80,27 @@ function PokemonDetail(props){
         }).catch(error => console.log(error));
     }
 
-    if (pokemon.name !== undefined && type.name !== undefined && evolution.chain !== undefined) {
+    function localeSpeciesGenera(arrGenera, locale){
+        let localeIndex = arrGenera.findIndex(function(genera) {
+            return genera.language.name == locale;
+        });
+        return <p className="text-capitalize">{arrGenera[localeIndex].genus}</p>;
+    }
+
+    function localeSpeciesFlavorText(arrText, locale){
+        let arrFlavorText = arrText.filter(function(txt) {
+            return txt.language.name == locale;
+        });
         
+        let newestTwo = [arrFlavorText[arrFlavorText.length - 1], arrFlavorText[arrFlavorText.length - 2]]
+        
+        return newestTwo.map(txt => {
+            return <p>{txt.flavor_text} ({txt.version.name})</p>
+        })
+    }
+
+    if (pokemon.name !== undefined && type.name !== undefined && evolution.chain !== undefined) {
+        let flavorText = localeSpeciesFlavorText(species.flavor_text_entries, "en");
         return (
             <div className="container">
                 {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
@@ -100,8 +120,43 @@ function PokemonDetail(props){
                                 {pokemon.stats.length > 0 ? <Stats pokemonStats={pokemon.stats} /> :''}
                             </div>
                             <div className="detail_right">
-                                <p>{species.flavor_text_entries ? species.flavor_text_entries[0].flavor_text : ''}</p>    
-                                {/* size */}                        
+                                <div>
+                                    {flavorText}
+                                </div>  
+
+                                {/* size etc */}     
+                                <div className="display-flex pokemon_detail-highlights">
+                                    <div className="detail_left">
+                                        <div className="detail_group">
+                                            <span>Height</span>
+                                            <p>{pokemon.height}</p>
+                                        </div>
+                                        <div className="detail_group">
+                                            <span>Weight</span>
+                                            <p>{pokemon.weight}</p>
+                                        </div>
+                                        <div className="detail_group">
+                                            <span>Gender</span>
+                                            <p>{species.gender_rate}</p>
+                                        </div>
+                                    </div>
+                                    <div className="detail_right">
+                                        <div className="detail_group">
+                                            <span>Category</span>
+                                            {localeSpeciesGenera(species.genera, "en")}
+                                        </div>
+                                        <div className="detail_group">
+                                            <span>Abilities</span>
+                                            <div>
+                                            {
+                                            pokemon.abilities.map(i => {
+                                                return <p className="text-capitalize">{i.ability.name}</p>
+                                            })
+                                            }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>{/* pokemon_detail */}  
                                 <div className="pokedex_pokemon-types display-flex flex-column justify-content-flex-start">
                                     <div className="display-flex flex-column">
                                         <h4>Type:</h4>
@@ -113,7 +168,7 @@ function PokemonDetail(props){
                                     </div>
                                 </div>
                             </div>
-                            <div class="detail_bottom">
+                            <div className="detail_bottom">
                                 <div className="button-wrapper center">
                                     <Link className="btn button-lightblue" to={`../generation/${species.generation.name}`}>Return to Pokedex</Link>
                                 </div>                                
