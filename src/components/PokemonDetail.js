@@ -3,8 +3,11 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ENDPOINTS, MAXCOUNT } from '../assets/utils';
 import { displayTypes } from './Pokedex';
+import BtnSupriseMe from './BtnSupriseMe';
 import Stats  from './Stats';
+import EvolutionChain from './EvolutionChain';
 import Loader from './Loader';
+import Image from './Image';
 
 function PokemonDetail(props){
     let params = useParams();
@@ -15,6 +18,7 @@ function PokemonDetail(props){
     const [evolution, setEvolution] = useState([]);
     const [nextPokemon, setNextPokemon] = useState({});
     const [prevPokemon, setPrevPokemon] = useState({});
+    const [loading, setLoading] = useState(true);
     
 
     useEffect(() => {
@@ -45,9 +49,15 @@ function PokemonDetail(props){
         }
 
     }, [pokemon])
-
+    
+    function stopLoaderAfterMinimum(duration = 1000){
+        setTimeout(function(){
+            setLoading(false);
+        }, duration)
+    }
 
     function getAllPokemonData() {
+        setLoading(true);
         let basicEndpoints = [];
         let metaEndpoints = [];
         basicEndpoints.push(`${ENDPOINTS.baseURL}${ENDPOINTS.pokemon}/${params.id}`);
@@ -63,7 +73,6 @@ function PokemonDetail(props){
                 metaEndpoints.push(speciesRes.evolution_chain.url);
                 setPokemon(pokemonRes);
                 setSpecies(speciesRes);
-            
                 Promise.all
                     (metaEndpoints.map((endpoint) => axios.get(endpoint)))
                     .then((multiResData) => {
@@ -73,15 +82,39 @@ function PokemonDetail(props){
                         console.log('data: evoRes: ', evoRes);
                         setType(typeRes);
                         setEvolution(evoRes);
+                        stopLoaderAfterMinimum(500);
                 }).catch(error => console.log(error));   
 
         }).catch(error => console.log(error));
+
     }
 
-    if (pokemon.name !== undefined && type.name !== undefined && evolution.chain !== undefined) {
+    function localeSpeciesGenera(arrGenera, locale){
+        let localeIndex = arrGenera.findIndex(function(genera) {
+            return genera.language.name == locale;
+        });
+        return <p className="text-capitalize">{arrGenera[localeIndex].genus}</p>;
+    }
+
+    function localeSpeciesFlavorText(arrText, locale){
+        let arrFlavorText = arrText.filter(function(txt) {
+            return txt.language.name == locale;
+        });
         
+        let newestTwo = [arrFlavorText[arrFlavorText.length - 1], arrFlavorText[arrFlavorText.length - 2]]
+        
+        return newestTwo.map(txt => {
+            return <p>{txt.flavor_text} ({txt.version.name})</p>
+        })
+    }
+
+    if (loading){
+        return(<Loader/>)
+    } else {
+        let flavorText = localeSpeciesFlavorText(species.flavor_text_entries, "en");
         return (
             <div className="container">
+                {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
                 <div className="container-inner">
                     <div className="pokemon_detail display-flex flex-column">
                         <div className="pokemon_header display-flex align-items-center">
@@ -92,14 +125,49 @@ function PokemonDetail(props){
                         <div className="pokemon_detail-body display-flex flex-row flex-wrap">
                             <div className="detail_left">
                                 <div className="pokemon_profle">
-                                    <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />            
+                                    <Image altTxt={pokemon.name} source={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} /> 
                                 </div>
                                 {/* stats */}
                                 {pokemon.stats.length > 0 ? <Stats pokemonStats={pokemon.stats} /> :''}
                             </div>
                             <div className="detail_right">
-                                <p>{species.flavor_text_entries ? species.flavor_text_entries[0].flavor_text : ''}</p>    
-                                {/* size */}                        
+                                <div>
+                                    {flavorText}
+                                </div>  
+
+                                {/* size etc */}     
+                                <div className="display-flex pokemon_detail-highlights flex-wrap">
+                                    <div className="detail_left">
+                                        <div className="detail_group">
+                                            <span>Height</span>
+                                            <p>{pokemon.height}</p>
+                                        </div>
+                                        <div className="detail_group">
+                                            <span>Weight</span>
+                                            <p>{pokemon.weight}</p>
+                                        </div>
+                                        <div className="detail_group">
+                                            <span>Gender</span>
+                                            <p>{species.gender_rate}</p>
+                                        </div>
+                                    </div>
+                                    <div className="detail_right">
+                                        <div className="detail_group">
+                                            <span>Category</span>
+                                            {localeSpeciesGenera(species.genera, "en")}
+                                        </div>
+                                        <div className="detail_group">
+                                            <span>Abilities</span>
+                                            <div>
+                                            {
+                                            pokemon.abilities.map(i => {
+                                                return <p className="text-capitalize">{i.ability.name}</p>
+                                            })
+                                            }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>{/* pokemon_detail */}  
                                 <div className="pokedex_pokemon-types display-flex flex-column justify-content-flex-start">
                                     <div className="display-flex flex-column">
                                         <h4>Type:</h4>
@@ -111,14 +179,17 @@ function PokemonDetail(props){
                                     </div>
                                 </div>
                             </div>
-                        <Link to={`../generation/${species.generation.name}`}>Return to Pokedex</Link>
+                            <div className="detail_bottom">
+                                <div className="button-wrapper center">
+                                    <EvolutionChain evolution={evolution}/>
+                                    <Link className="btn button-lightblue" to={`../generation/${species.generation.name}`}>Return to Pokedex</Link>
+                                </div>                                
+                            </div>{/* detail_bottom */}
                         </div>
                     </div>{/* pokemon_detail */}
                 </div>
             </div>
         )
-    } else {
-        return(<Loader/>)
     }
 
 }

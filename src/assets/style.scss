@@ -390,6 +390,12 @@ img {
     max-width:100%;
 }
 
+.App {
+    height:100vh;
+}
+
+.text-capitalize {text-transform: capitalize;}
+
 .display-flex   {display:flex;}
 .flex-wrap      {flex-wrap: wrap;}
 .flex-nowrap    {flex-wrap: nowrap}
@@ -422,6 +428,7 @@ img {
     background-color:white;
     background-image:url('img/container_bg.png');
     clear:both;
+    padding-top:2em;
     .container-inner {
         margin:auto;
         max-width:1024px;
@@ -434,7 +441,7 @@ img {
     flex-direction:row;
     width:100%;
     max-width:$breakpoint_lg;
-    padding:0.5em;
+    padding:1em 0.5em;
     margin:auto;
     background-color:#FFF;
     background-repeat:repeat;
@@ -505,34 +512,34 @@ img {
         }
     }
 
-
-    .button-wrapper {
-        display:block;
-        width:100%;
-        text-align:center;
-        &.center {
-            margin:auto;
-            text-align:center;
-
-        }
-        button {
-            font-family: 'Ubuntu';
-            cursor: pointer;
-            font-size:1em;
-            padding:0.5em 1em;
-            border:none;
-            border-radius:0.25em;
-            margin: auto;
-            margin-bottom:1em;
-            text-align:center;
-        }
-    }  
-    
     select {
         padding:.5em 1.25em;
         font-size:1em;
         margin:0 .5em;
         text-transform:capitalize;
+    }
+}
+
+
+.button-wrapper {
+    display:block;
+    width:100%;
+    text-align:center;
+    &.center {
+        margin:auto;
+        text-align:center;
+
+    }
+    .btn {
+        font-family: 'Ubuntu';
+        cursor: pointer;
+        font-size:1em;
+        padding:0.5em 1em;
+        border:none;
+        border-radius:0.25em;
+        margin: auto;
+        margin-bottom:1em;
+        text-align:center;
     }
 }
 
@@ -550,7 +557,7 @@ img {
 }
 
 .pokemon_detail {
-    padding-top:4em;
+    padding-top:1em;
     .pokemon_header {
         display:flex;
         flex-wrap:nowrap;
@@ -586,7 +593,10 @@ img {
         height:auto;
         margin-top:0;
         font-size:2em;
-        margin: -1.5em 3em 0 3em;
+        margin:-1.5em 1em 0 1em;
+        @media (min-width:$breakpoint_md) {
+            margin: -1.5em 3em 0 3em;
+        }                
         padding:.75em 0;
         flex:0 0 100%;
         clip-path: polygon(15% 0, 85% 0, 100% 100%, 0% 100%);
@@ -594,7 +604,10 @@ img {
 
     .pokemon_detail-body {
         padding:1em 0;
-        margin:-1em 5em;
+        margin:-1em 1em 0 1em;
+        @media (min-width:$breakpoint_md) {
+            margin:0em 5em;
+        }        
         background: white;
         z-index: 10;
     }
@@ -613,6 +626,30 @@ img {
         }
     }
 
+    .pokemon_detail-highlights {
+        background:#30a7d7;
+        border-radius:0.5em;
+        padding:0.5em;
+        .detail_group {
+            margin-bottom:1em;
+        }
+        span {
+            color:#ffffff;
+        }
+        p {
+            margin:0;
+            font-size:1.25em;
+            color:#1f1f1f;
+        }
+    }
+
+    .detail_bottom {
+        margin-top:1em;
+        padding:1em;
+        flex:0 0 100%;
+        max-width:100%;        
+    }
+
     .stats {
         background:#a4a4a4;
         padding:1.5em;
@@ -627,9 +664,24 @@ img {
     
     .pokemon_profle {
         background-color:#F2F2F2;
+        min-height:402px;
+        @media (min-width:$breakpoint_md) {
+        }
+        .Image_wrapper {
+            width:100%;
+            height:100%;
+            transition:all .25s ease;
+        }
     }
 
 }
+
+.opacity-0 { opacity:0;}
+.opacity-1 { opacity:1;}
+
+.transition-ease            {transition:all .2s ease;}
+.visibility-hidden-default  {visibility: hidden;}
+.visibility-default         {visibility: initial;}
 
 
 @keyframes in-from-left {
@@ -687,7 +739,7 @@ img {
     background-size: 32px 32px;
     width: 32px;
     height: 32px;
-    position: fixed;
+    position: absolute;
     transform:translate(-50%,-50%);
     left:50%;
     top:50%;
@@ -696,6 +748,16 @@ img {
     -moz-animation: loader .5s infinite;
     -o-animation: loader .5s infinite;
     animation: loader .5s infinite  
+}
+
+.loader-wrapper {
+    position:relative;
+    height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    background:white;
+    overflow:hidden;
 }
 
 @keyframes loader {
@@ -708,6 +770,10 @@ footer {
     color:#999;
     text-align:center;
     padding:1em;
+    height:20vh;
+    display:flex;
+    justify-content: center;
+    align-items:center;
     a, b {
         color:#fefefe;
     }
