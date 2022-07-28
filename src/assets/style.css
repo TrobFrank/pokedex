@@ -332,6 +332,10 @@ img {
   max-width: 100%;
 }
 
+.App {
+  height: 100vh;
+}
+
 .text-capitalize {
   text-transform: capitalize;
 }
@@ -673,14 +677,14 @@ img {
 
 .pokemon_detail .pokemon_detail-body {
   padding: 1em 0;
-  margin: -1em 1em;
+  margin: -1em 1em 0 1em;
   background: white;
   z-index: 10;
 }
 
 @media (min-width: 48em) {
   .pokemon_detail .pokemon_detail-body {
-    margin: -1em 5em;
+    margin: 0em 5em;
   }
 }
 
@@ -753,12 +757,7 @@ img {
 
 .pokemon_detail .pokemon_profle {
   background-color: #F2F2F2;
-}
-
-@media (min-width: 48em) {
-  .pokemon_detail .pokemon_profle {
-    min-height: 402px;
-  }
+  min-height: 402px;
 }
 
 .pokemon_detail .pokemon_profle .Image_wrapper {
@@ -968,13 +967,29 @@ img {
   background-size: 32px 32px;
   width: 32px;
   height: 32px;
-  position: fixed;
+  position: absolute;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
   left: 50%;
   top: 50%;
   -webkit-animation: loader .5s infinite;
   animation: loader .5s infinite;
+}
+
+.loader-wrapper {
+  position: relative;
+  height: 80vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: white;
+  overflow: hidden;
 }
 
 @-webkit-keyframes loader {
@@ -1003,7 +1018,17 @@ footer {
   background: #1f1f1f;
   color: #999;
   text-align: center;
-  padding: 5em 0 3em;
+  padding: 1em;
+  height: 20vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 footer a, footer b {

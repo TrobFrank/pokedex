@@ -5,6 +5,7 @@ import { ENDPOINTS, MAXCOUNT } from '../assets/utils';
 import { displayTypes } from './Pokedex';
 import BtnSupriseMe from './BtnSupriseMe';
 import Stats  from './Stats';
+import EvolutionChain from './EvolutionChain';
 import Loader from './Loader';
 import Image from './Image';
 
@@ -48,7 +49,12 @@ function PokemonDetail(props){
         }
 
     }, [pokemon])
-
+    
+    function stopLoaderAfterMinimum(duration = 1000){
+        setTimeout(function(){
+            setLoading(false);
+        }, duration)
+    }
 
     function getAllPokemonData() {
         setLoading(true);
@@ -76,7 +82,7 @@ function PokemonDetail(props){
                         console.log('data: evoRes: ', evoRes);
                         setType(typeRes);
                         setEvolution(evoRes);
-                        setLoading(false);
+                        stopLoaderAfterMinimum(500);
                 }).catch(error => console.log(error));   
 
         }).catch(error => console.log(error));
@@ -102,14 +108,9 @@ function PokemonDetail(props){
         })
     }
 
-    /* if (pokemon.name !== undefined && type.name !== undefined && evolution.chain !== undefined) {
-        setLoading(false);
-    }*/
-
     if (loading){
         return(<Loader/>)
     } else {
-
         let flavorText = localeSpeciesFlavorText(species.flavor_text_entries, "en");
         return (
             <div className="container">
@@ -135,7 +136,7 @@ function PokemonDetail(props){
                                 </div>  
 
                                 {/* size etc */}     
-                                <div className="display-flex pokemon_detail-highlights">
+                                <div className="display-flex pokemon_detail-highlights flex-wrap">
                                     <div className="detail_left">
                                         <div className="detail_group">
                                             <span>Height</span>
@@ -180,6 +181,7 @@ function PokemonDetail(props){
                             </div>
                             <div className="detail_bottom">
                                 <div className="button-wrapper center">
+                                    <EvolutionChain evolution={evolution}/>
                                     <Link className="btn button-lightblue" to={`../generation/${species.generation.name}`}>Return to Pokedex</Link>
                                 </div>                                
                             </div>{/* detail_bottom */}
