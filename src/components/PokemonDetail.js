@@ -121,7 +121,7 @@ function PokemonDetail(props){
                             {Object.keys(prevPokemon).length > 0 ? <Link className="pokemon_next-prev-link" to={`../pokemon/${prevPokemon.id}/${prevPokemon.name}`}><span>#{prevPokemon.id} {prevPokemon.name}</span></Link> : ''}
                             {Object.keys(nextPokemon).length > 0 ? <Link className="pokemon_next-prev-link" to={`../pokemon/${nextPokemon.id}/${nextPokemon.name}`}><span>{nextPokemon.name} #{nextPokemon.id}</span></Link> : ''}
                         </div>
-                        <h3> {pokemon.name} #{pokemon.id}</h3>
+                        <h3 className="pokemon_detail-title"> {pokemon.name} #{pokemon.id}</h3>
                         <div className="pokemon_detail-body display-flex flex-row flex-wrap">
                             <div className="detail_left">
                                 <div className="pokemon_profle">
@@ -161,7 +161,7 @@ function PokemonDetail(props){
                                             <div>
                                             {
                                             pokemon.abilities.map(i => {
-                                                return <p className="text-capitalize">{i.ability.name}</p>
+                                                return <p key={i.ability.name} className="text-capitalize">{i.ability.name}</p>
                                             })
                                             }
                                             </div>

@@ -103,33 +103,6 @@ function Pokedex(props){
         }
     }
 
-    /* SORTING FUNCTIONS */
-    const setArrayOrder = (array, order) => {
-        let arrSorted = []
-        //console.log('array passed: ', array);
-        switch(order) {
-            case 'low':
-            default:     arrSorted = orderBy(array, index => index.sort, ['asc']); break;
-            case 'high': arrSorted = orderBy(array, index => index.sort, ['desc']); break;
-            case 'az':   arrSorted = orderBy(array, index => index.name, ['asc']); break;
-            case 'za':   arrSorted = orderBy(array, index => index.name, ['desc']); break;                                        
-        } 
-        //console.log('arrSorted: ', arrSorted);
-        return arrSorted;
-    }
-
-    function sortSpeciesListByURL(arrDirty, order){
-        let arrMod = arrDirty.map((index) => {
-            var pathList    = index.url.split('/');
-            var idFromURL   = pathList[pathList.length - 1] < 1 ? pathList[pathList.length - 2] : pathList[pathList.length - 1] ; //trailing slash or not
-            return arrDirty = {...index, "sort": padStart(idFromURL, 3, '00'), "id": idFromURL}
-        });
-        // let arrClean = orderBy(arrMod, index => index.sort, ['asc']); //sort by number asc first, then determine 
-        // arrClean = setArrayOrder(arrClean, order);
-        let arrClean = setArrayOrder(arrMod, order);        
-        return arrClean;    
-    }    
-
     return (
         <div className="container">
             {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
@@ -175,5 +148,32 @@ function displayTypes(pokemonTypes) {
     return typesHMTL;
 }
 
+/* SORTING FUNCTIONS */
+function setArrayOrder(array, order) {
+    let arrSorted = []
+    //console.log('array passed: ', array);
+    switch(order) {
+        case 'low':
+        default:     arrSorted = orderBy(array, index => index.sort, ['asc']); break;
+        case 'high': arrSorted = orderBy(array, index => index.sort, ['desc']); break;
+        case 'az':   arrSorted = orderBy(array, index => index.name, ['asc']); break;
+        case 'za':   arrSorted = orderBy(array, index => index.name, ['desc']); break;                                        
+    } 
+    //console.log('arrSorted: ', arrSorted);
+    return arrSorted;
+}
+
+function sortSpeciesListByURL(arrDirty, order){
+    let arrMod = arrDirty.map((index) => {
+        var pathList    = index.url.split('/');
+        var idFromURL   = pathList[pathList.length - 1] < 1 ? pathList[pathList.length - 2] : pathList[pathList.length - 1] ; //trailing slash or not
+        return arrDirty = {...index, "sort": padStart(idFromURL, 3, '00'), "id": idFromURL}
+    });
+    // let arrClean = orderBy(arrMod, index => index.sort, ['asc']); //sort by number asc first, then determine 
+    // arrClean = setArrayOrder(arrClean, order);
+    let arrClean = setArrayOrder(arrMod, order);        
+    return arrClean;    
+}    
+
 export default Pokedex;
-export { displayTypes };
+export { displayTypes, sortSpeciesListByURL };
