@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { upperFirst } from 'lodash';
 import axios from 'axios';
 import { ENDPOINTS, MAXCOUNT } from '../assets/utils';
 import { displayTypes } from './Pokedex';
@@ -89,6 +90,17 @@ function PokemonDetail(props){
 
     }
 
+    function calculateGenderRates(rate){
+        let rates = {};
+        if (rate > 0){
+            rates.female = (rate/8)*100;
+        } else if (rate === -1 || rate === 0){
+            rates.female = 100;         
+        }
+        rates.male = 100 - rates.female;  
+        return rates;
+    }
+
     function localeSpeciesGenera(arrGenera, locale){
         let localeIndex = arrGenera.findIndex(function(genera) {
             return genera.language.name == locale;
@@ -103,8 +115,8 @@ function PokemonDetail(props){
         
         let newestTwo = [arrFlavorText[arrFlavorText.length - 1], arrFlavorText[arrFlavorText.length - 2]]
         
-        return newestTwo.map(txt => {
-            return <p>{txt.flavor_text} ({txt.version.name})</p>
+        return newestTwo.map((txt, i) => {
+            return <p key={i}>{txt.flavor_text} ({txt.version.name})</p>
         })
     }
 
@@ -112,16 +124,17 @@ function PokemonDetail(props){
         return(<Loader/>)
     } else {
         let flavorText = localeSpeciesFlavorText(species.flavor_text_entries, "en");
+        let genderRates = calculateGenderRates(species.gender_rate);
         return (
             <div className="container">
                 {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
                 <div className="container-inner">
                     <div className="pokemon_detail display-flex flex-column">
                         <div className="pokemon_header display-flex align-items-center">
-                            {Object.keys(prevPokemon).length > 0 ? <Link className="pokemon_next-prev-link" to={`../pokemon/${prevPokemon.id}/${prevPokemon.name}`}><span>#{prevPokemon.id} {prevPokemon.name}</span></Link> : ''}
-                            {Object.keys(nextPokemon).length > 0 ? <Link className="pokemon_next-prev-link" to={`../pokemon/${nextPokemon.id}/${nextPokemon.name}`}><span>{nextPokemon.name} #{nextPokemon.id}</span></Link> : ''}
+                            {Object.keys(prevPokemon).length > 0 ? <Link className="pokemon_next-prev-link" to={`../pokemon/${prevPokemon.id}/${prevPokemon.name}`}><span>#{prevPokemon.id} {upperFirst(prevPokemon.name)}</span></Link> : ''}
+                            {Object.keys(nextPokemon).length > 0 ? <Link className="pokemon_next-prev-link" to={`../pokemon/${nextPokemon.id}/${nextPokemon.name}`}><span>{upperFirst(nextPokemon.name)} #{nextPokemon.id}</span></Link> : ''}
                         </div>
-                        <h3> {pokemon.name} #{pokemon.id}</h3>
+                        <h3 className="pokemon_detail-title"> {upperFirst(pokemon.name)} #{pokemon.id}</h3>
                         <div className="pokemon_detail-body display-flex flex-row flex-wrap">
                             <div className="detail_left">
                                 <div className="pokemon_profle">
@@ -148,7 +161,10 @@ function PokemonDetail(props){
                                         </div>
                                         <div className="detail_group">
                                             <span>Gender</span>
-                                            <p>{species.gender_rate}</p>
+                                            <p>
+                                                {`${genderRates.male}% Male`}<br/>
+                                                {`${genderRates.female}% Female`}
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="detail_right">
@@ -161,7 +177,7 @@ function PokemonDetail(props){
                                             <div>
                                             {
                                             pokemon.abilities.map(i => {
-                                                return <p className="text-capitalize">{i.ability.name}</p>
+                                                return <p key={i.ability.name} className="text-capitalize">{i.ability.name}</p>
                                             })
                                             }
                                             </div>
