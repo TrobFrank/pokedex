@@ -412,6 +412,10 @@ img {
 .align-items-flex-end {align-items: flex-end;}
 .align-items-flex-start {align-items:flex-start;}
 
+.w-100 {width:100%;}
+.h-100 {height:100%;}
+.wh-100 {height:100%; width:100%;}
+
 .content-wrapper {
     display:block;
     background-color:#2c2c2c;
@@ -587,7 +591,7 @@ img {
         }  
     }
 
-    h3 {
+    .pokemon_detail-title {
         text-align:center;
         background:white;
         height:auto;
@@ -672,6 +676,88 @@ img {
             height:100%;
             transition:all .25s ease;
         }
+    }
+
+    .evolutions {
+        display:flex;
+        flex-wrap:wrap;
+        width:100%;
+        padding:1.5em;
+        margin-bottom:3em;
+        border-radius:.5em;
+        color:white;
+        background-color:#545454;
+        background-image:url('img/container_bg.png');
+        clip-path: polygon(0 0, 100% 0, 100% 50%, 100% 100%, 5% 100%, 0 90%);
+        overflow-x:auto;
+        .header {
+            width:100%;
+            text-align: left;
+            h3 {
+                margin-top:0;
+            }
+        }
+        .evolution_detail {
+            width:100%;
+
+        }
+        .pokemon_summary {
+            position:relative;
+            flex:1 1 100%;
+            @media (min-width:$breakpoint_md) {
+                flex:1 1 25%;
+            }            
+            padding:1em;
+            
+            img {
+                padding:4px;
+                background: #616161;
+                border: 4px solid white;
+                border-radius: 100%;
+                min-width: 96px;
+                min-height: 96px;
+                box-shadow: 0px 4px 15px -5px #1f1f1f;
+            }
+            .detail-bottom {
+                width:100%;
+                display:flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;                
+                .pokedex_pokemon-title {
+                    order:1;
+                    padding-right:.5em;
+                }                
+                .pokedex_pokemon-id {
+                    order:2;
+                }
+                .pokedex_pokemon-types {
+                    justify-content: center;
+                    flex:1 1 100%;
+                    order:3;
+                }                
+            } 
+            
+        }
+        @media (min-width:$breakpoint_md) {
+            .evolution_arrow {
+                &:after {
+                    content: '';
+                    position: absolute;
+                    right: 0;
+                    top: 33%;
+                    width: .6em;
+                    height: .6em;
+                    transform: translate(0%, -50%) rotate(-45deg);
+                    border: solid white;
+                    border-width: 0 0.4em 0.4em 0;
+                    display: inline-block;
+                    padding: 0.5em;
+                    box-shadow: 10px 10px 15px -8px rgba(0, 0, 0, 0.5);
+                }
+            }
+        } 
+
     }
 
 }

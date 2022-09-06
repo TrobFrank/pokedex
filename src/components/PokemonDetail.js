@@ -103,8 +103,8 @@ function PokemonDetail(props){
         
         let newestTwo = [arrFlavorText[arrFlavorText.length - 1], arrFlavorText[arrFlavorText.length - 2]]
         
-        return newestTwo.map(txt => {
-            return <p>{txt.flavor_text} ({txt.version.name})</p>
+        return newestTwo.map((txt, i) => {
+            return <p key={i}>{txt.flavor_text} ({txt.version.name})</p>
         })
     }
 

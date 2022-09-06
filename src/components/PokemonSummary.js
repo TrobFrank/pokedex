@@ -8,16 +8,13 @@ import Loader from './Loader';
 import { ENDPOINTS } from '../assets/utils';
 
 function PokemonSummary(props){
-    let pokemon;
-    let animClass;
+    let pokemon, animClass, evoStage, evoArrow;
     if (props.pokemon) {
         pokemon = props.pokemon;
         animClass = props.animClass;
+        evoStage = props.evoStage >= 0 ? props.evoStage : 0;
+        evoArrow = props.evoArrow;
     }
-
-    useEffect(() => {
-        /* */
-    }, []);
 
     const [needsAnimation, setNeedsAnimation] = useState(true);
 
@@ -26,22 +23,26 @@ function PokemonSummary(props){
     }
 
     if (pokemon.name && pokemon.id) {
+        let classList = `${needsAnimation && animClass ? animClass : ``} evoStage-${evoStage} ${evoArrow ? `evolution_arrow`: ''}`;
         return (
-        <div className={`pokedex_pokemon pokemon_summary ${needsAnimation ? animClass : ''}`} onMouseEnter={removeAnimation}>
-            <div className="detail-top">
-                <Link to={`../pokemon/${pokemon.id}/${pokemon.name}`}>
-                    {/* <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />             */}
-                    <img src={pokemon.sprites.front_default} />                         
-                </Link>
-            </div>
-            <div className="detail-bottom">
-                <p className="pokedex_pokemon-id">#{padStart(pokemon.id, 3, '00')}</p>
-                <h3 className="pokedex_pokemon-title">{upperFirst(pokemon.name)}</h3>
-                <div className="display-flex flex-row flex-nowrap justify-content-flex-start pokedex_pokemon-types">
-                    {displayTypes(pokemon.types)}
+        <>
+            <div className={`pokedex_pokemon pokemon_summary ${classList}`} onMouseEnter={removeAnimation}>
+                <div className="detail-top">
+                    <Link to={`../pokemon/${pokemon.id}/${pokemon.name}`}>
+                        {/* <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />             */}
+                        <img src={pokemon.sprites.front_default} />                         
+                    </Link>
                 </div>
-            </div>
-        </div>  
+                <div className="detail-bottom">
+                    <p className="pokedex_pokemon-id">#{padStart(pokemon.id, 3, '00')}</p>
+                    <h3 className="pokedex_pokemon-title">{upperFirst(pokemon.name)}</h3>
+                    <div className="display-flex flex-row flex-nowrap justify-content-flex-start pokedex_pokemon-types">
+                        {displayTypes(pokemon.types)}
+                    </div>
+                </div>
+            </div>  
+            
+        </>
         )      
     } else {
         return (<Loader/>)
