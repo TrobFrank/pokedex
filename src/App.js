@@ -3,6 +3,7 @@ import { Routes, Route, useParams, Navigate } from "react-router-dom";
 import Pokedex from './components/Pokedex';
 import PokedexAPI from './components/PokedexAPI';
 import PokemonDetail from './components/PokemonDetail';
+import Navigation from './components/Navigation';
 import Loader from './components/Loader';
 import { ENDPOINTS } from './assets/utils';
 
@@ -40,32 +41,34 @@ function App() {
     return (
       <div className="App">
         <div className="content-wrapper">
-
         {(
           generationList && typeList && speciesData ? 
-          <Routes>
-            <Route path="generation/:generation" element={
-              <Pokedex 
-              generationList  = {generationList}
-              typeList        = {typeList}
-              speciesList     = {speciesData.results}
-              speciesCount    = {speciesData.count}
-              />
-            } />
-            <Route path="pokemon/:id" element={
-              <PokemonDetail 
-              speciesList     = {speciesData.results}
-              typeList        = {typeList}
-              />
-            } />
-            <Route path="pokemon/:id/:name" element={
-              <PokemonDetail 
-              speciesList     = {speciesData.results}
-              typeList        = {typeList}
-              />
+          <>
+            <Navigation speciesData={speciesData} /> 
+            <Routes>
+              <Route path="generation/:generation" element={
+                <Pokedex 
+                generationList  = {generationList}
+                typeList        = {typeList}
+                speciesList     = {speciesData.results}
+                speciesCount    = {speciesData.count}
+                />
               } />
-            <Route path="*" element={<Navigate to={`generation/${generationList[0].name}`} />} />
-          </Routes> 
+              <Route path="pokemon/:id" element={
+                <PokemonDetail 
+                speciesList     = {speciesData.results}
+                typeList        = {typeList}
+                />
+              } />
+              <Route path="pokemon/:id/:name" element={
+                <PokemonDetail 
+                speciesList     = {speciesData.results}
+                typeList        = {typeList}
+                />
+                } />
+              <Route path="*" element={<Navigate to={`generation/${generationList[0].name}`} />} />
+            </Routes> 
+          </>
           : 
           <Loader/>
         )}

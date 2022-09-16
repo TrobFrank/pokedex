@@ -6,7 +6,7 @@ import PokedexAPI from './PokedexAPI';
 import PokemonSummary from './PokemonSummary';
 import BtnSupriseMe from './BtnSupriseMe';
 import getAnimationClass from '../assets/getAnimationClass';
-import { FILTERS, ENDPOINTS } from '../assets/utils';
+import { FILTERS, ENDPOINTS, fnGetIdFromURL } from '../assets/utils';
 
 function Pokedex(props){
     let params = useParams();
@@ -165,8 +165,7 @@ function setArrayOrder(array, order) {
 
 function sortSpeciesListByURL(arrDirty, order){
     let arrMod = arrDirty.map((index) => {
-        var pathList    = index.url.split('/');
-        var idFromURL   = pathList[pathList.length - 1] < 1 ? pathList[pathList.length - 2] : pathList[pathList.length - 1] ; //trailing slash or not
+        let idFromURL = fnGetIdFromURL(index.url);
         return arrDirty = {...index, "sort": padStart(idFromURL, 3, '00'), "id": idFromURL}
     });
     // let arrClean = orderBy(arrMod, index => index.sort, ['asc']); //sort by number asc first, then determine 

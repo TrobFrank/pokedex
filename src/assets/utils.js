@@ -18,4 +18,10 @@ const ENDPOINTS = {
 
 const MAXCOUNT = 898;
 
+const fnGetIdFromURL = function(str){
+    var pathList = str.split('/');
+    return pathList[pathList.length - 1] < 1 ? pathList[pathList.length - 2] : pathList[pathList.length - 1] ; //trailing slash or not
+}
+
 export { FILTERS, ENDPOINTS, MAXCOUNT }
+export { fnGetIdFromURL }
