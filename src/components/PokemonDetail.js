@@ -4,7 +4,6 @@ import { upperFirst } from 'lodash';
 import axios from 'axios';
 import { ENDPOINTS, MAXCOUNT } from '../assets/utils';
 import { displayTypes } from './Pokedex';
-import BtnSupriseMe from './BtnSupriseMe';
 import Stats  from './Stats';
 import EvolutionChain from './EvolutionChain';
 import Loader from './Loader';
@@ -127,7 +126,6 @@ function PokemonDetail(props){
         let genderRates = calculateGenderRates(species.gender_rate);
         return (
             <div className="container">
-                {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
                 <div className="container-inner">
                     <div className="pokemon_detail display-flex flex-column">
                         <div className="pokemon_header display-flex align-items-center">

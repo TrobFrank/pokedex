@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Routes, Route, useParams, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fnGetIdFromURL } from '../assets/utils';
+import BtnSupriseMe from './BtnSupriseMe';
 import logo from '../assets/img/logo.png';
 
 export default function Navigation(props){
@@ -27,7 +28,7 @@ export default function Navigation(props){
                 speciesKeys.some((key)=> li[key].toLowerCase().includes(val))
             ).map((li, id) =>{
                 let findNumber = fnGetIdFromURL(li.url);
-                return <Link key={id} to={`/pokemon/${findNumber}/${li.name}`} style={{'padding-left':'0.5em'}}>{li.name}</Link>
+                return <Link key={id} to={`/pokemon/${findNumber}/${li.name}`} style={{'paddingLeft':'0.5em'}}>{li.name}</Link>
             });
             setSpeciesHTML(filteredList); 
         }
@@ -40,6 +41,7 @@ export default function Navigation(props){
                 <button className={`btn button-lightblue`} onClick={() => setShowingSpeciesList(!showingSpeciesList)} style={{'margin-bottom':0}}>
                     {showingSpeciesList ? 'Hide List' : 'View List'}
                 </button>
+                <BtnSupriseMe speciesList={props.speciesData.results}/>
             </div>
             <div className={`speciesHTML animate-in left ${showingSpeciesList ? `show` : `hide`}`}> 
                 <input className={`speciesFilter`} placeholder={`Name or ID`} value={filterVal} onChange={(e)=>setFilterVal(e.target.value.toLowerCase())} />

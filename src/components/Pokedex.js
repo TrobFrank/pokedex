@@ -4,7 +4,6 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import PokedexAPI from './PokedexAPI';
 import PokemonSummary from './PokemonSummary';
-import BtnSupriseMe from './BtnSupriseMe';
 import getAnimationClass from '../assets/getAnimationClass';
 import { FILTERS, ENDPOINTS, fnGetIdFromURL } from '../assets/utils';
 
@@ -105,7 +104,6 @@ function Pokedex(props){
 
     return (
         <div className="container">
-            {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
             <div className="pokedex_results">
                 <div className="toggle-controls display-flex justify-content-center align-items-center">
                     <select id="generation" defaultValue={params.generation} onChange={(e) => switchGeneration(e.target.value)} className="color-bg color-black">

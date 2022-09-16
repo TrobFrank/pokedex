@@ -15,9 +15,7 @@ function BtnSupriseMe(props){
     }
 
     return (
-        <div className="button-wrapper center">
-            <button className="btn button-lightblue" onClick={loadSupriseMe}>Surprise Me!</button>
-        </div>
+        <button className="btn button-lightblue" onClick={loadSupriseMe} style={{'marginLeft':'1em'}} >Surprise Me!</button>
     )
 }
 
