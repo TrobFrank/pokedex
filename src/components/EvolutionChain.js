@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PokedexAPI from './PokedexAPI';
 import { ENDPOINTS } from '../assets/utils';
-import { sortSpeciesListByURL } from './Pokedex';
+import { orderBy } from 'lodash';
 import PokemonSummary from './PokemonSummary';
 
 function EvolutionChain(props){
@@ -42,7 +42,8 @@ function EvolutionChain(props){
     if (evolution.length > 0){
         let sortedEvo;
         let evoArrow = true;
-        if (evolution.length > 0)   { sortedEvo = sortSpeciesListByURL(evolution, 'low');} 
+        console.log('evolution: ', evolution);
+        if (evolution.length > 0)   { sortedEvo = orderBy(evolution, index => index.evoStage, ['asc'])} 
         else                        { sortedEvo = evolution }
         console.log(sortedEvo);
         return (
