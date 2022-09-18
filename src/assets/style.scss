@@ -932,12 +932,11 @@ border-radius: 6px;
     .speciesHTML {
         position:fixed;
         left:0;
-        bottom:0;
+        top:0;
         width:100vw;
         height:100vh;
-        padding-top:20vh;
         background:white;
-        padding:0 1em;
+        padding:4em 1em 0em 1em;
         overflow:auto;    
         z-index:399;
         &.hide {display:none;}
@@ -954,8 +953,7 @@ border-radius: 6px;
         }
         .listNumber {
             position:absolute;
-            left:0;
-            transform:translate(-50%,0);
+            left:-0.5em;
             font-size:1.5em;
             color:#ccc;
         }
