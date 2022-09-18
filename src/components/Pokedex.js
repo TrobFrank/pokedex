@@ -107,7 +107,7 @@ function Pokedex(props){
     return (
         <div className="container">
             <div className="pokedex_results">
-                <div className="toggle-controls display-flex justify-content-center align-items-center">
+                <div className="toggle-controls display-flex flex-wrap justify-content-center align-items-center">
                     <select id="generation" defaultValue={params.generation} onChange={(e) => switchGeneration(e.target.value)} className="color-bg color-black">
                         <option disabled="disabled">Select Generation</option>
                         {displayGenerationList(props.generationList)}

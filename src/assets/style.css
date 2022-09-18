@@ -346,6 +346,12 @@ img {
   display: flex;
 }
 
+.display-inline-flex {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
 .flex-wrap {
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
@@ -470,6 +476,7 @@ img {
   background-color: #FFF;
   background-repeat: repeat;
   background-position: 0 0;
+  overflow-x: hidden;
 }
 
 @media (min-width: 30em) {
@@ -493,7 +500,19 @@ img {
 .pokedex_results .toggle-controls {
   width: 100%;
   margin: 1em auto;
-  cursor: pointer;
+  padding: 0 1.5em;
+}
+
+@media (min-width: 30em) {
+  .pokedex_results .toggle-controls {
+    padding: 0em;
+  }
+}
+
+@media (min-width: 64em) {
+  .pokedex_results .toggle-controls {
+    padding: 0 1.5em;
+  }
 }
 
 .pokedex_results .pokedex_pokemon {
@@ -501,16 +520,17 @@ img {
       -ms-flex: 0 0 100%;
           flex: 0 0 100%;
   max-width: 100%;
-  padding: 0.5em;
-  margin-bottom: 3em;
+  padding: 1.5em;
 }
 
 @media (min-width: 30em) {
   .pokedex_results .pokedex_pokemon {
+    padding: 0.5em;
     -webkit-box-flex: 0;
         -ms-flex: 0 0 50%;
             flex: 0 0 50%;
     max-width: 50%;
+    margin-bottom: 3em;
   }
 }
 
@@ -578,8 +598,33 @@ img {
 .pokedex_results select {
   padding: .5em 1.25em;
   font-size: 1em;
-  margin: 0 .5em;
+  margin: 0.5em;
   text-transform: capitalize;
+  width: 100%;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+          flex: 0 0 100%;
+  cursor: pointer;
+}
+
+@media (min-width: 30em) {
+  .pokedex_results select {
+    width: auto;
+    margin: 0 0.5em;
+    -webkit-box-flex: 1;
+        -ms-flex: 1 0 auto;
+            flex: 1 0 auto;
+  }
+}
+
+@media (min-width: 64em) {
+  .pokedex_results select {
+    width: auto;
+    margin: 0 0.5em;
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 25%;
+            flex: 0 0 25%;
+  }
 }
 
 .button-wrapper {
@@ -630,6 +675,7 @@ img {
 
 .pokemon_detail {
   padding-top: 1em;
+  overflow-x: hidden;
 }
 
 .pokemon_detail .pokemon_header {
@@ -649,15 +695,18 @@ img {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
 }
 
 .pokemon_detail .pokemon_header .pokemon_next-prev-link {
-  padding: 3em;
+  padding: 2.5em 1em;
   background: #a4a4a4;
   color: white;
   -webkit-box-flex: 1;
-      -ms-flex: 1 1 auto;
-          flex: 1 1 auto;
+      -ms-flex: 1 1 50%;
+          flex: 1 1 50%;
   text-align: center;
   border-right: solid 2px white;
   -webkit-transition: all .3s ease;
@@ -666,7 +715,7 @@ img {
 
 .pokemon_detail .pokemon_header .pokemon_next-prev-link span {
   position: relative;
-  top: -1.5em;
+  top: -1em;
 }
 
 .pokemon_detail .pokemon_header .pokemon_next-prev-link + .pokemon_next-prev-link {
@@ -678,12 +727,22 @@ img {
   background-color: #30a7d7;
 }
 
+@media (min-width: 30em) {
+  .pokemon_detail .pokemon_header .pokemon_next-prev-link {
+    white-space: nowrap;
+    padding: 3em;
+  }
+  .pokemon_detail .pokemon_header .pokemon_next-prev-link span {
+    top: -1.5em;
+  }
+}
+
 .pokemon_detail .pokemon_detail-title {
   text-align: center;
   background: white;
   height: auto;
   margin-top: 0;
-  font-size: 2em;
+  font-size: 1.5em;
   margin: -1.5em 1em 0 1em;
   padding: .75em 0;
   -webkit-box-flex: 0;
@@ -695,6 +754,7 @@ img {
 
 @media (min-width: 48em) {
   .pokemon_detail .pokemon_detail-title {
+    font-size: 2em;
     margin: -1.5em 3em 0 3em;
   }
 }
@@ -803,8 +863,6 @@ img {
   color: white;
   background-color: #545454;
   background-image: url("img/container_bg.png");
-  -webkit-clip-path: polygon(0 0, 100% 0, 100% 50%, 100% 100%, 5% 100%, 0 90%);
-          clip-path: polygon(0 0, 100% 0, 100% 50%, 100% 100%, 5% 100%, 0 90%);
   overflow-x: auto;
 }
 
@@ -889,6 +947,10 @@ img {
 }
 
 @media (min-width: 48em) {
+  .pokemon_detail .evolutions {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 50%, 100% 100%, 5% 100%, 0 90%);
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 100% 100%, 5% 100%, 0 90%);
+  }
   .pokemon_detail .evolutions .evolution_arrow:after {
     content: '';
     position: absolute;
@@ -1124,10 +1186,6 @@ img {
   width: 32px;
   height: 32px;
   position: absolute;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-  left: 50%;
-  top: 50%;
   -webkit-animation: loader .5s infinite;
   animation: loader .5s infinite;
 }
@@ -1215,14 +1273,13 @@ img {
   position: fixed;
   left: 0;
   bottom: 0;
-  height: calc(100vh - 85px);
-  width: 275px;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 20vh;
   background: white;
   padding: 0 1em;
   overflow: auto;
-  z-index: 99;
-  -webkit-box-shadow: 0px 10px 15px -10px black;
-          box-shadow: 0px 10px 15px -10px black;
+  z-index: 399;
 }
 
 .nav .speciesHTML.hide {
@@ -1233,11 +1290,71 @@ img {
   display: block;
 }
 
+.nav .speciesHTML .speciesColumn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: auto;
+}
+
+.nav .speciesHTML .listItem {
+  position: relative;
+  width: 100%;
+}
+
+.nav .speciesHTML .listNumber {
+  position: absolute;
+  left: 0;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+  font-size: 1.5em;
+  color: #ccc;
+}
+
+.nav .speciesHTML input[type="text"] {
+  margin: 1em auto;
+  font-size: 1.5em;
+}
+
 .nav .speciesHTML a {
-  display: block;
   margin: 0.5em 0;
+  font-size: 1.5em;
   text-transform: capitalize;
   color: #30a7d7;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+          flex: 0 0 100%;
+  text-align: center;
+}
+
+.nav .speciesHTML .close {
+  background: transparent;
+  border: 1px solid #ccc;
+  width: 2em;
+  height: 2em;
+  font-size: 1.25em;
+  color: black;
+  cursor: pointer;
+}
+
+.nav .speciesHTML input[type="text"],
+.nav .speciesHTML .speciesColumn {
+  width: 66vw;
+}
+
+@media (min-width: 30em) {
+  .nav .speciesHTML input[type="text"],
+  .nav .speciesHTML .speciesColumn {
+    width: 50vw;
+    max-width: 340px;
+  }
 }
 
 footer {

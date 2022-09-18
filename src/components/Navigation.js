@@ -28,10 +28,21 @@ export default function Navigation(props){
                 speciesKeys.some((key)=> li[key].toLowerCase().includes(val))
             ).map((li, id) =>{
                 let findNumber = fnGetIdFromURL(li.url);
-                return <Link key={id} to={`/pokemon/${findNumber}/${li.name}`} style={{'paddingLeft':'0.5em'}}>{li.name}</Link>
+                return <div key={id} className={`listItem display-flex align-items-center`}>
+                    <span className={`listNumber`}>{findNumber}</span>
+                    <Link to={`/pokemon/${findNumber}/${li.name}`} onClick={handleCloseList}>
+                        {li.name}
+                    </Link>
+                </div>
             });
             setSpeciesHTML(filteredList); 
         }
+    }
+
+    function handleCloseList(){
+        document.getElementById('speciesHTML').scrollTo(0,0);
+        setShowingSpeciesList(false);
+        setFilterVal('')
     }
 
     return (
@@ -43,9 +54,14 @@ export default function Navigation(props){
                 </button>
                 <BtnSupriseMe speciesList={props.speciesData.results}/>
             </div>
-            <div className={`speciesHTML animate-in left ${showingSpeciesList ? `show` : `hide`}`}> 
-                <input className={`speciesFilter`} placeholder={`Name or ID`} value={filterVal} onChange={(e)=>setFilterVal(e.target.value.toLowerCase())} />
-                {speciesHTML}
+            <div id={`speciesHTML`} className={`speciesHTML animate-in left ${showingSpeciesList ? `show` : `hide`}`}> 
+                <div className={`display-flex align-items-center`}>
+                    <input className={`speciesFilter`} type="text" placeholder={`Pokemon Name or ID`} value={filterVal} onChange={(e)=>setFilterVal(e.target.value.toLowerCase())} />
+                    <button className={`close`} onClick={handleCloseList}>&times;</button>
+                </div>
+                <div className={`speciesColumn`}>
+                    {speciesHTML}
+                </div>
             </div>
         </div>
     )
