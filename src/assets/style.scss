@@ -492,6 +492,7 @@ img {
             animation-delay: 0s;
         }    
         .detail-top {
+            padding:1em;
             background:#F2F2F2;
             border-top-left-radius: 0.3em;
             border-top-right-radius: 0.3em;
@@ -544,8 +545,11 @@ img {
         border:none;
         border-radius:0.25em;
         margin: auto;
-        margin-bottom:1em;
         text-align:center;
+        font-size:.8em;
+        @media (min-width:$breakpoint_sm){
+            font-size:1em;
+        }
     }
 }
 
@@ -622,10 +626,8 @@ img {
     .detail_left,
     .detail_right {
         padding:1em;
-        @media (min-width:$breakpoint_sm) {
-            flex:0 0 100%;
-            max-width:100%;
-        }         
+        flex:0 0 100%;
+        max-width:100%;     
         @media (min-width:$breakpoint_md) {
             flex:0 0 50%;
             max-width:50%;
@@ -670,8 +672,8 @@ img {
     
     .pokemon_profle {
         background-color:#F2F2F2;
-        min-height:402px;
         @media (min-width:$breakpoint_md) {
+            min-height:402px;
         }
         .Image_wrapper {
             width:100%;
@@ -827,8 +829,11 @@ img {
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
-    width: 140px;
+    width: 90px;
     height:auto;
+    @media (min-width:$breakpoint_sm){
+        width:140px;
+    }
 }
 
 .loader {
@@ -862,6 +867,21 @@ img {
     100% { transform: rotate(360deg)}
 }
 
+/* Scroll 1 */
+::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+::-webkit-scrollbar-track {
+background-color: #ccc;
+border-radius: 0px;
+}
+::-webkit-scrollbar-thumb {
+background-color: #9b9b9b;
+border-radius: 6px;
+}
+  
+
 .nav {
     position:fixed;
     left:0;
@@ -884,7 +904,7 @@ img {
         left:0;
         bottom:0;
         height:calc(100vh - 85px);
-        min-width:15vw;
+        width:275px;
         background:white;
         padding:0 1em;
         overflow:auto;    

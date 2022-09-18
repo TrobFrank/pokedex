@@ -47,6 +47,8 @@ function PokemonDetail(props){
                 setNextPokemon(nextPokemonData);
             }                    
         }
+        
+        document.title = `${upperFirst(pokemon.name)} | Pokedex`;
 
     }, [pokemon])
     
@@ -67,8 +69,8 @@ function PokemonDetail(props){
             .then((multiResData) => {
                 let pokemonRes = multiResData[0].data;
                 let speciesRes = multiResData[1].data;
-                console.log('data: pokemonRes: ', pokemonRes);
-                console.log('data: speciesRes: ', speciesRes);
+                //console.log('data: pokemonRes: ', pokemonRes);
+                //console.log('data: speciesRes: ', speciesRes);
                 metaEndpoints.push(pokemonRes.types[0].type.url);
                 metaEndpoints.push(speciesRes.evolution_chain.url);
                 setPokemon(pokemonRes);
@@ -78,8 +80,8 @@ function PokemonDetail(props){
                     .then((multiResData) => {
                         let typeRes = multiResData[0].data;
                         let evoRes = multiResData[1].data;
-                        console.log('data: typeRes: ', typeRes);
-                        console.log('data: evoRes: ', evoRes);
+                        //console.log('data: typeRes: ', typeRes);
+                        //console.log('data: evoRes: ', evoRes);
                         setType(typeRes);
                         setEvolution(evoRes);
                         stopLoaderAfterMinimum(500);

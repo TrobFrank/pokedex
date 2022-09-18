@@ -38,7 +38,7 @@ export default function Navigation(props){
         <div className={`nav`}> 
             <img className={`logo`} src={logo} alt="PokeAPI" />
             <div className={`button-wrapper left`}>
-                <button className={`btn button-lightblue`} onClick={() => setShowingSpeciesList(!showingSpeciesList)} style={{'margin-bottom':0}}>
+                <button className={`btn button-lightblue`} onClick={() => setShowingSpeciesList(!showingSpeciesList)} style={{'marginBottom':0}}>
                     {showingSpeciesList ? 'Hide List' : 'View List'}
                 </button>
                 <BtnSupriseMe speciesList={props.speciesData.results}/>

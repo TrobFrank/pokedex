@@ -16,15 +16,17 @@ function EvolutionChain(props){
 
     function getEvolutionData(species, evoStage){
         //console.log(evolution);
-        console.log(species.name, evoStage);
+        //console.log(species.name, evoStage);
         PokedexAPI('name', ENDPOINTS.pokemon, species.name).then(pokemon => {
             pokemon.url = species.url; //allows sorting via sortSpeciesListByURL
             pokemon.evoStage = evoStage;
+            //console.log(pokemon)
             setEvolution(evolution => [...evolution, pokemon]);
         })
     }
 
     function getEvolvesTo(chain, evoStage){
+        //console.log('chain: ', chain)
         getEvolutionData(chain.species, evoStage);
         if (chain.evolves_to.length > 0){
             evoStage++;
@@ -42,10 +44,8 @@ function EvolutionChain(props){
     if (evolution.length > 0){
         let sortedEvo;
         let evoArrow = true;
-        console.log('evolution: ', evolution);
         if (evolution.length > 0)   { sortedEvo = orderBy(evolution, index => index.evoStage, ['asc'])} 
         else                        { sortedEvo = evolution }
-        console.log(sortedEvo);
         return (
             <div className="evolutions">
                 <div className="header">
@@ -55,8 +55,8 @@ function EvolutionChain(props){
                 <div className="evolution_details display-flex flex-row flex-wrap w-100">
                 {
                 sortedEvo.map(evo =>{
-                    if (evo.evoStage == maxEvoStage.current){evoArrow = false;}
-                    return <PokemonSummary pokemon={evo} key={evo.id} evoStage={evo.evoStage} evoArrow={evoArrow}/>
+                    if (evo.evoStage == maxEvoStage.current || sortedEvo.length == 1){evoArrow = false;}
+                    return <PokemonSummary pokemon={evo} key={evo.id} inEvoChain={true} evoStage={evo.evoStage} evoArrow={evoArrow}/>
                 })
                 }
                 </div>

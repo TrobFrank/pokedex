@@ -1,17 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { upperFirst, padStart, random, add, union, orderBy } from 'lodash';
+import { upperFirst, padStart } from 'lodash';
 import { displayTypes } from './Pokedex';
-import PokedexAPI from './PokedexAPI';
-import { useEffect } from 'react/cjs/react.development';
 import Loader from './Loader';
-import { ENDPOINTS } from '../assets/utils';
+import Image from './Image';
 
 function PokemonSummary(props){
-    let pokemon, animClass, evoStage, evoArrow;
+    let pokemon, animClass, inEvoChain, evoStage, evoArrow;
     if (props.pokemon) {
         pokemon = props.pokemon;
         animClass = props.animClass;
+        inEvoChain = props.inEvoChain;
         evoStage = props.evoStage >= 0 ? props.evoStage : 0;
         evoArrow = props.evoArrow;
     }
@@ -30,7 +29,7 @@ function PokemonSummary(props){
                 <div className="detail-top">
                     <Link to={`../pokemon/${pokemon.id}/${pokemon.name}`}>
                         {/* <img src={pokemon.sprites.other['official-artwork'].front_default ? pokemon.sprites.other['official-artwork'].front_default : pokemon.sprites.front_default} alt={pokemon.name} />             */}
-                        <img src={pokemon.sprites.front_default} />                         
+                        <Image altTxt={pokemon.name} source={inEvoChain ? pokemon.sprites.front_default : pokemon.sprites.other['official-artwork'].front_default} />                    
                     </Link>
                 </div>
                 <div className="detail-bottom">

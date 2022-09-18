@@ -12,13 +12,13 @@ function Pokedex(props){
     let navigate = useNavigate();
     let location = useLocation();
 
-    let limit = 2;
+    let limit = 12;
 
     let refPokedexRange = useRef([]);
     let refOffset = useRef(0);
     let refRenderCount = useRef(0);
         refRenderCount.current = refRenderCount.current + 1;
-        console.log(`This many renders: ${refRenderCount.current}`);
+        //console.log(`This many renders: ${refRenderCount.current}`);
 
     let [order, setOrder] = useState('low');
     let [generation, setGeneration] = useState(null);
@@ -30,6 +30,8 @@ function Pokedex(props){
         refPokedexRange.current = [];
         getGenerationData();
         //console.log('location.pathname changed');
+        
+        document.title = `${upperFirst(params.generation)} | Pokedex`;
     }, [location.pathname]);
 
     useEffect(() => {
@@ -58,7 +60,7 @@ function Pokedex(props){
     const displayGenerationList = (genList) => {
         return (
             genList.map(function(gen){
-                return (<option key={gen.name} value={gen.name} selected={params.generation == gen.name ? 'selected': null } >{gen.name}</option>)
+                return (<option key={gen.name} value={gen.name} defaultValue={params.generation == gen.name ? gen.name: null } >{gen.name}</option>)
             })
         )
     }
