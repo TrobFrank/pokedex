@@ -4,22 +4,21 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import PokedexAPI from './PokedexAPI';
 import PokemonSummary from './PokemonSummary';
-import BtnSupriseMe from './BtnSupriseMe';
 import getAnimationClass from '../assets/getAnimationClass';
-import { FILTERS, ENDPOINTS } from '../assets/utils';
+import { FILTERS, ENDPOINTS, fnGetIdFromURL } from '../assets/utils';
 
 function Pokedex(props){
     let params = useParams();
     let navigate = useNavigate();
     let location = useLocation();
 
-    let limit = 2;
+    let limit = 12;
 
     let refPokedexRange = useRef([]);
     let refOffset = useRef(0);
     let refRenderCount = useRef(0);
         refRenderCount.current = refRenderCount.current + 1;
-        console.log(`This many renders: ${refRenderCount.current}`);
+        //console.log(`This many renders: ${refRenderCount.current}`);
 
     let [order, setOrder] = useState('low');
     let [generation, setGeneration] = useState(null);
@@ -31,6 +30,8 @@ function Pokedex(props){
         refPokedexRange.current = [];
         getGenerationData();
         //console.log('location.pathname changed');
+        
+        document.title = `${upperFirst(params.generation)} | Pokedex`;
     }, [location.pathname]);
 
     useEffect(() => {
@@ -59,7 +60,7 @@ function Pokedex(props){
     const displayGenerationList = (genList) => {
         return (
             genList.map(function(gen){
-                return (<option key={gen.name} value={gen.name} selected={params.generation == gen.name ? 'selected': null } >{gen.name}</option>)
+                return (<option key={gen.name} value={gen.name} defaultValue={params.generation == gen.name ? gen.name: null } >{gen.name}</option>)
             })
         )
     }
@@ -105,7 +106,6 @@ function Pokedex(props){
 
     return (
         <div className="container">
-            {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
             <div className="pokedex_results">
                 <div className="toggle-controls display-flex justify-content-center align-items-center">
                     <select id="generation" defaultValue={params.generation} onChange={(e) => switchGeneration(e.target.value)} className="color-bg color-black">
@@ -165,8 +165,7 @@ function setArrayOrder(array, order) {
 
 function sortSpeciesListByURL(arrDirty, order){
     let arrMod = arrDirty.map((index) => {
-        var pathList    = index.url.split('/');
-        var idFromURL   = pathList[pathList.length - 1] < 1 ? pathList[pathList.length - 2] : pathList[pathList.length - 1] ; //trailing slash or not
+        let idFromURL = fnGetIdFromURL(index.url);
         return arrDirty = {...index, "sort": padStart(idFromURL, 3, '00'), "id": idFromURL}
     });
     // let arrClean = orderBy(arrMod, index => index.sort, ['asc']); //sort by number asc first, then determine 

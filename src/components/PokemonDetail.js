@@ -4,7 +4,6 @@ import { upperFirst } from 'lodash';
 import axios from 'axios';
 import { ENDPOINTS, MAXCOUNT } from '../assets/utils';
 import { displayTypes } from './Pokedex';
-import BtnSupriseMe from './BtnSupriseMe';
 import Stats  from './Stats';
 import EvolutionChain from './EvolutionChain';
 import Loader from './Loader';
@@ -48,6 +47,8 @@ function PokemonDetail(props){
                 setNextPokemon(nextPokemonData);
             }                    
         }
+        
+        document.title = `${upperFirst(pokemon.name)} | Pokedex`;
 
     }, [pokemon])
     
@@ -68,8 +69,8 @@ function PokemonDetail(props){
             .then((multiResData) => {
                 let pokemonRes = multiResData[0].data;
                 let speciesRes = multiResData[1].data;
-                console.log('data: pokemonRes: ', pokemonRes);
-                console.log('data: speciesRes: ', speciesRes);
+                //console.log('data: pokemonRes: ', pokemonRes);
+                //console.log('data: speciesRes: ', speciesRes);
                 metaEndpoints.push(pokemonRes.types[0].type.url);
                 metaEndpoints.push(speciesRes.evolution_chain.url);
                 setPokemon(pokemonRes);
@@ -79,8 +80,8 @@ function PokemonDetail(props){
                     .then((multiResData) => {
                         let typeRes = multiResData[0].data;
                         let evoRes = multiResData[1].data;
-                        console.log('data: typeRes: ', typeRes);
-                        console.log('data: evoRes: ', evoRes);
+                        //console.log('data: typeRes: ', typeRes);
+                        //console.log('data: evoRes: ', evoRes);
                         setType(typeRes);
                         setEvolution(evoRes);
                         stopLoaderAfterMinimum(500);
@@ -127,7 +128,6 @@ function PokemonDetail(props){
         let genderRates = calculateGenderRates(species.gender_rate);
         return (
             <div className="container">
-                {props.speciesList.length > 0 ? <BtnSupriseMe speciesList={props.speciesList} /> : ''}
                 <div className="container-inner">
                     <div className="pokemon_detail display-flex flex-column">
                         <div className="pokemon_header display-flex align-items-center">
